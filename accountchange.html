@@ -1,213 +1,160 @@
-<html lang="en"><head> <meta charset="UTF-8"> <title>STROW Account Change</title> <style>html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
-  background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
-  font-family: sans-serif;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>STROW Account Change</title>
+  <style>
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
+      font-family: sans-serif;
+    }
 
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  z-index: 1;
-}
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+      z-index: 1;
+    }
 
-.grid-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.5) 8px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 8px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.5) 8px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 8px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-.content {
-  position: relative;
-  z-index: 1;
-  padding: 2rem;
-  text-align: center;
-}
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      text-align: center;
+    }
 
-/* Unified input styling */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-select {
-  background-color: white;
-  border: 3px solid transparent;
-  border-radius: 1rem;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  outline: none;
-  text-align: center;
-  font-family: sans-serif;
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    select {
+      background-color: white;
+      border: 3px solid transparent;
+      border-radius: 1rem;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      text-align: center;
+      font-family: sans-serif;
+      background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F), white;
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: 0 0 8px rgba(0, 255, 127, 0.4);
+      transition: box-shadow 0.3s ease;
+    }
 
-  background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F), white;
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus,
+    select:focus,
+    textarea:focus {
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    }
 
-  box-shadow: 0 0 8px rgba(0, 255, 127, 0.4);
-  transition: box-shadow 0.3s ease;
-}
+    input[type="submit"],
+    input[type="button"] {
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F);
+      box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-/* Focus glow */
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-select:focus,
-textarea:focus {
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-}
+    input[type="submit"]:hover,
+    input[type="button"]:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 255, 127, 0.4);
+    }
 
-/* Submit and button styling */
-input[type="submit"],
-input[type="button"] {
-  color: white;
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 1rem;
-  cursor: pointer;
-  background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F);
-  box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+    input[type="submit"]:active,
+    input[type="button"]:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(0, 255, 127, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div class="content">
+    <form id="strowForm">
+      <h1>STROW Account Change</h1>
 
-/* Hover and active effects */
-input[type="submit"]:hover,
-input[type="button"]:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 255, 127, 0.4);
-}
+      <p>Log in or sign up?</p>
+      <select id="modeSelect" name="mode">
+        <option value="login">Log In</option>
+        <option value="signup">Sign Up</option>
+      </select>
 
-input[type="submit"]:active,
-input[type="button"]:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0, 255, 127, 0.2);
-}
-</style> </head> <body> <div class="grid-overlay"></div> <div class="content"> <form id="strowForm">
-  <h1>STROW Account Change</h1>
+      <p><label for="username">Username:</label></p>
+      <input type="text" id="username" name="username" required>
 
-  <p>Log in or sign up?</p>
-  <select id="modeSelect" name="mode">
-    <option value="login">Log In</option>
-    <option value="signup">Sign Up</option>
-  </select>
+      <p><label for="password">Password:</label></p>
+      <input type="password" id="password" name="password" required>
 
-  <p><label for="username">Username:</label></p>
-  <input type="text" id="username" name="username" required="">
+      <div id="confirmPasswordSection">
+        <p><label for="confirm">Confirm Password:</label></p>
+        <input type="password" id="confirm" name="confirm">
+      </div>
 
-  <p><label for="password">Password:</label></p>
-  <input type="password" id="password" name="password" required="">
+      <p><label for="email">Optional Recovery Email:</label></p>
+      <input type="email" id="email" name="email">
 
-  <div id="confirmPasswordSection">
-    <p><label for="confirm">Confirm Password:</label></p>
-    <input type="password" id="confirm" name="confirm">
+      <br><br>
+      <input type="submit" id="submitBtn" name="action" value="Sign Up">
+      <br><br>
+      <input type="button" id="forgotBtn" value="Forgot Password">
+    </form>
   </div>
 
-  <p><label for="email">Optional Recovery Email:</label></p>
-  <input type="email" id="email" name="email">
+  <script>
+    const modeSelect = document.getElementById('modeSelect');
+    const confirmSection = document.getElementById('confirmPasswordSection');
+    const submitBtn = document.getElementById('submitBtn');
+    const forgotBtn = document.getElementById('forgotBtn');
 
-  <br><br>
-  <input type="submit" id="submitBtn" name="action" value="Sign Up">
-  <br><br>
-  <input type="button" id="forgotBtn" value="Forgot Password">
-</form>
-
-<script>
-  const modeSelect = document.getElementById('modeSelect');
-  const confirmSection = document.getElementById('confirmPasswordSection');
-  const submitBtn = document.getElementById('submitBtn');
-  const forgotBtn = document.getElementById('forgotBtn');
-
-  modeSelect.addEventListener('change', () => {
-    const mode = modeSelect.value;
-    if (mode === 'login') {
-      confirmSection.style.display = 'none';
-      forgotBtn.style.display = 'inline-block';
-      submitBtn.value = 'Log In';
-    } else {
-      confirmSection.style.display = 'block';
-      forgotBtn.style.display = 'none';
-      submitBtn.value = 'Sign Up';
-    }
-  });
-
-  // Initial state
-  modeSelect.dispatchEvent(new Event('change'));
-
-  // Submit handler
-  document.getElementById('strowForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = {
-      mode: modeSelect.value,
-      username: username.value,
-      password: password.value,
-      confirm: confirm.value,
-      email: email.value,
-      action: submitBtn.value
-    };
-
-    const response = await fetch('YOUR_SCRIPT_URL', {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-    const result = await response.json();
-    if (result.approved) {
-      const fingerprint = await getDeviceFingerprint(); // You’ll define this
-      const fingerprintResponse = await fetch('YOUR_SCRIPT_URL', {
-        method: 'POST',
-        body: JSON.stringify({ fingerprint }),
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      const finalResult = await fingerprintResponse.json();
-      if (finalResult.redirect) {
-        window.location.href = '/homepage'; // Or wherever you want
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      if (mode === 'login') {
+        confirmSection.style.display = 'none';
+        forgotBtn.style.display = 'inline-block';
+        submitBtn.value = 'Log In';
+      } else {
+        confirmSection.style.display = 'block';
+        forgotBtn.style.display = 'none';
+        submitBtn.value = 'Sign Up';
       }
-    } else {
-      alert('Access denied or invalid credentials.');
-    }
-  });
-
-  // Forgot Password handler
-  forgotBtn.addEventListener('click', async () => {
-    const formData = {
-      mode: 'forgot',
-      username: username.value,
-      email: email.value,
-      action: 'Forgot Password'
-    };
-
-    const response = await fetch('YOUR_SCRIPT_URL', {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: { 'Content-Type': 'application/json' }
     });
 
-    const result = await response.json();
-    alert(result.message || 'Password recovery initiated.');
-  });
-
-  // Dummy fingerprint function
-  async function getDeviceFingerprint() {
-    return navigator.userAgent + '|' + screen.width + 'x' + screen.height;
-  }
-</script>
-</div></body></html>
+    // Initial toggle state
+    modeSelect.dispatchEvent(new Event('change'));
+  </script>
+</body>
+</html>
