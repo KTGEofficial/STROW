@@ -2,159 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>STROW Account Change</title>
+  <title>STROW Signup</title>
   <style>
-    html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
-      font-family: sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-      position: relative;
-      z-index: 1;
-    }
-
-    .grid-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.5) 8px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 8px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .content {
-      position: relative;
-      z-index: 1;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    input[type="email"],
-    select {
-      background-color: white;
-      border: 3px solid transparent;
-      border-radius: 1rem;
-      padding: 0.6rem 1rem;
-      font-size: 1rem;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-      outline: none;
-      text-align: center;
-      font-family: sans-serif;
-      background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F), white;
-      background-origin: border-box;
-      background-clip: padding-box, border-box;
-      box-shadow: 0 0 8px rgba(0, 255, 127, 0.4);
-      transition: box-shadow 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="password"]:focus,
-    input[type="email"]:focus,
-    select:focus,
-    textarea:focus {
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
-    }
-
-    input[type="submit"],
-    input[type="button"] {
-      color: white;
-      font-size: 1rem;
-      font-weight: bold;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 1rem;
-      cursor: pointer;
-      background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F);
-      box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    input[type="submit"]:hover,
-    input[type="button"]:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 12px rgba(0, 255, 127, 0.4);
-    }
-
-    input[type="submit"]:active,
-    input[type="button"]:active {
-      transform: scale(0.98);
-      box-shadow: 0 2px 6px rgba(0, 255, 127, 0.2);
-    }
+    body { font-family: sans-serif; padding: 2em; }
+    input, button { margin: 0.5em 0; display: block; }
+    .status { margin-top: 1em; color: red; }
   </style>
 </head>
 <body>
-  <div class="grid-overlay"></div>
-  <div class="content">
-    <form id="strowForm">
-      <h1>STROW Account Change</h1>
-
-      <p>Log in or sign up?</p>
-      <select id="modeSelect" name="mode">
-        <option value="login">Log In</option>
-        <option value="signup">Sign Up</option>
-      </select>
-
-      <p><label for="username">Username:</label></p>
-      <input type="text" id="username" name="username" required>
-
-      <p><label for="password">Password:</label></p>
-      <input type="password" id="password" name="password" required>
-
-      <div id="confirmPasswordSection">
-        <p><label for="confirm">Confirm Password:</label></p>
-        <input type="password" id="confirm" name="confirm">
-      </div>
-
-      <p><label for="email">Optional Recovery Email:</label></p>
-      <input type="email" id="email" name="email">
-
-      <br><br>
-      <input type="submit" id="submitBtn" name="action" value="Sign Up">
-      <br><br>
-      <input type="button" id="forgotBtn" value="Forgot Password">
-    </form>
-  </div>
+  <h2>Signup</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <input type="password" id="confirm" placeholder="Confirm Password">
+  <input type="email" id="email" placeholder="Email">
+  <button onclick="submitSignup()">Sign Up</button>
+  <div class="status" id="status"></div>
 
   <script>
-    const modeSelect = document.getElementById('modeSelect');
-    const confirmSection = document.getElementById('confirmPasswordSection');
-    const submitBtn = document.getElementById('submitBtn');
-    const forgotBtn = document.getElementById('forgotBtn');
+    async function getFingerprints() {
+      const traits = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width,
+        screen.height,
+        screen.colorDepth,
+        new Date().getTimezoneOffset(),
+        navigator.platform,
+        navigator.hardwareConcurrency,
+        navigator.deviceMemory || 'unknown',
+      ];
+      const rawData = traits.join('::');
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
+      const hex = Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+      const base64 = btoa(rawData);
+      return { hex, base64 };
+    }
 
-    modeSelect.addEventListener('change', () => {
-      const mode = modeSelect.value;
-      if (mode === 'login') {
-        confirmSection.style.display = 'none';
-        forgotBtn.style.display = 'inline-block';
-        submitBtn.value = 'Log In';
-      } else {
-        confirmSection.style.display = 'block';
-        forgotBtn.style.display = 'none';
-        submitBtn.value = 'Sign Up';
+    async function accountChangeFunction(data) {
+      try {
+        const query = new URLSearchParams(data).toString();
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbyRI8jsy8NFvFXdBBx4uzcz397WVPcVJxVWW_81jwKYtGZr2T81h2TrEKYZM4zZ3f7M/exec?${query}`);
+        const result = await response.json();
+
+        if (result.success) {
+          window.location.href = "https://ktgeofficial.github.io/STROW/";
+        } else {
+          document.getElementById('status').textContent = result.message || "Signup failed.";
+        }
+      } catch (err) {
+        document.getElementById('status').textContent = "Error communicating with server.";
       }
-    });
+    }
 
-    // Initial toggle state
-    modeSelect.dispatchEvent(new Event('change'));
+    async function submitSignup() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      const email = document.getElementById('email').value.trim();
+      const { hex, base64 } = await getFingerprints();
+
+      const payload = {
+        mode: "signup",
+        username,
+        password,
+        confirm,
+        email,
+        action: "accountChange",
+        fingerprint: hex,
+        pseudofingerprint: base64
+      };
+
+      accountChangeFunction(payload);
+    }
   </script>
 </body>
 </html>
