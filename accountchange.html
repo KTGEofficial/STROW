@@ -135,82 +135,64 @@
       <br><br>
       <input type="button" id="forgotBtn" value="Forgot Password" style="display: inline-block;">
     </form>
-
-    <iframe name="hiddenFrame" id="hiddenFrame"></iframe>
   </div>
 
   <script>
-    const modeSelect = document.getElementById('modeSelect');
-    const confirmSection = document.getElementById('confirmPasswordSection');
-    const submitBtn = document.getElementById('submitBtn');
-    const forgotBtn = document.getElementById('forgotBtn');
+  const modeSelect = document.getElementById('modeSelect');
+  const confirmSection = document.getElementById('confirmPasswordSection');
+  const submitBtn = document.getElementById('submitBtn');
+  const forgotBtn = document.getElementById('forgotBtn');
+  const form = document.getElementById('strowForm');
 
-    modeSelect.addEventListener('change', () => {
-      const mode = modeSelect.value;
-      if (mode === 'login') {
-        confirmSection.style.display = 'none';
-        forgotBtn.style.display = 'inline-block';
-        submitBtn.value = 'Log In';
-      } else {
-        confirmSection.style.display = 'block';
-        forgotBtn.style.display = 'none';
-        submitBtn.value = 'Sign Up';
-      }
-    });
+  const endpoint = 'https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec';
 
-    modeSelect.dispatchEvent(new Event('change'));
+  modeSelect.addEventListener('change', () => {
+    const mode = modeSelect.value;
+    confirmSection.style.display = mode === 'login' ? 'none' : 'block';
+    forgotBtn.style.display = mode === 'login' ? 'inline-block' : 'none';
+    submitBtn.value = mode === 'login' ? 'Log In' : 'Sign Up';
+  });
 
-    async function getDeviceFingerprint() {
-      return navigator.userAgent + '|' + screen.width + 'x' + screen.height;
-    }
+  modeSelect.dispatchEvent(new Event('change'));
 
-    function createIframeForm(data) {
-      const form = document.createElement('form');
-      form.action = 'https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec';
-      form.method = 'GET';
-      form.target = 'hiddenFrame';
-      form.style.display = 'none';
+  async function getDeviceFingerprint() {
+    return navigator.userAgent + '|' + screen.width + 'x' + screen.height;
+  }
 
-      for (const key in data) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = data[key];
-        form.appendChild(input);
-      }
+  function sendGetRequest(data) {
+    const query = new URLSearchParams(data).toString();
+    fetch(`${endpoint}?${query}`, { method: 'GET', mode: 'no-cors' });
+  }
 
-      document.body.appendChild(form);
-      form.submit();
-      setTimeout(() => form.remove(), 1000);
-    }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fingerprint = await getDeviceFingerprint();
+    const data = {
+      mode: modeSelect.value,
+      username: username.value,
+      password: password.value,
+      confirm: confirm.value,
+      email: email.value,
+      action: submitBtn.value,
+      fingerprint
+    };
+    sendGetRequest(data);
+  });
 
-    document.getElementById('strowForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fingerprint = await getDeviceFingerprint();
-      const data = {
-        mode: modeSelect.value,
-        username: username.value,
-        password: password.value,
-        confirm: confirm.value,
-        email: email.value,
-        action: submitBtn.value,
-        fingerprint
-      };
-      createIframeForm(data);
-    });
+  forgotBtn.addEventListener('click', async () => {
+    const fingerprint = await getDeviceFingerprint();
+    const data = {
+      mode: 'forgot',
+      username: username.value,
+      email: email.value,
+      action: 'Forgot Password',
+      fingerprint
+    };
+    sendGetRequest(data);
+  });
+</script>
 
-    forgotBtn.addEventListener('click', async () => {
-      const fingerprint = await getDeviceFingerprint();
-      const data = {
-        mode: 'forgot',
-        username: username.value,
-        email: email.value,
-        action: 'Forgot Password',
-        fingerprint
-      };
-      createIframeForm(data);
-    });
-  </script>
 </body>
 </html>
+
 
