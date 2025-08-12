@@ -2,20 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>STROW Signup</title>
+  <title>STROW Auth</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; }
-    input, button { margin: 0.5em 0; display: block; }
-    .status { margin-top: 1em; color: red; }
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      background: linear-gradient(to right, #f0f4ff, #e0eaff);
+      color: #333;
+    }
+
+    h2 {
+      margin-bottom: 0.5em;
+    }
+
+    input {
+      margin: 0.5em 0;
+      padding: 0.6em;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .button {
+      position: relative;
+      overflow: hidden;
+      margin: 0.5em 0;
+      padding: 0.6em 1.2em;
+      border: none;
+      border-radius: 4px;
+      background: linear-gradient(to right, #6a8eff, #4e6bff);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .button:hover {
+      background: linear-gradient(to right, #4e6bff, #6a8eff);
+    }
+
+    .button::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+    }
+
+    .button:active::after {
+      width: 200px;
+      height: 200px;
+      transition: 0s;
+    }
+
+    .status {
+      margin-top: 1em;
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h2>Signup</h2>
+  <h2>STROW Signup / Login</h2>
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
-  <input type="password" id="confirm" placeholder="Confirm Password">
-  <input type="email" id="email" placeholder="Email">
-  <button onclick="submitSignup()">Sign Up</button>
+  <input type="password" id="confirm" placeholder="Confirm Password (for signup)">
+  <input type="email" id="email" placeholder="Email (for signup or recovery)">
+  <button class="button" onclick="submitSignup()">Sign Up</button>
+  <button class="button" onclick="submitLogin()">Login</button>
+  <button class="button" onclick="submitRecovery()">Forgot Password</button>
   <div class="status" id="status"></div>
 
   <script>
@@ -39,16 +100,20 @@
       return { hex, base64 };
     }
 
-    async function accountChangeFunction(data) {
+    async function accountChangeFunction(data, redirectOnSuccess = true) {
       try {
         const query = new URLSearchParams(data).toString();
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbyRI8jsy8NFvFXdBBx4uzcz397WVPcVJxVWW_81jwKYtGZr2T81h2TrEKYZM4zZ3f7M/exec?${query}`);
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec?${query}`);
         const result = await response.json();
 
         if (result.success) {
-          window.location.href = "https://ktgeofficial.github.io/STROW/";
+          if (redirectOnSuccess) {
+            window.location.href = "https://ktgeofficial.github.io/STROW/";
+          } else {
+            document.getElementById('status').textContent = "Recovery email sent if matched.";
+          }
         } else {
-          document.getElementById('status').textContent = result.message || "Signup failed.";
+          document.getElementById('status').textContent = result.message || "Operation failed.";
         }
       } catch (err) {
         document.getElementById('status').textContent = "Error communicating with server.";
@@ -74,6 +139,43 @@
       };
 
       accountChangeFunction(payload);
+    }
+
+    async function submitLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+      const { hex, base64 } = await getFingerprints();
+
+      const payload = {
+        mode: "login",
+        action: "Login",
+        username,
+        password,
+        email,
+        fingerprint: hex,
+        pseudofingerprint: base64
+      };
+
+      accountChangeFunction(payload);
+    }
+
+    async function submitRecovery() {
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const { hex, base64 } = await getFingerprints();
+
+      const payload = {
+        mode: "login",
+        action: "Forgot Password",
+        username,
+        password: "", // not needed
+        email,
+        fingerprint: hex,
+        pseudofingerprint: base64
+      };
+
+      accountChangeFunction(payload, false);
     }
   </script>
 </body>
