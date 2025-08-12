@@ -1,0 +1,141 @@
+<html><head>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
+      font-family: sans-serif;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.5) 8px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 8px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .button-link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F); /* Gradient restored */
+  box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
+}
+
+
+    .button-link:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 255, 255, 0.4);
+    }
+
+    .button-link:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(0, 255, 255, 0.2);
+    }
+
+    .ripple-outline {
+  position: absolute;
+  border: 2px solid rgba(0, 255, 255, 0.4); /* Soft green glow */
+  border-radius: 1rem;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: scale(1);
+  animation: ripple-outline-animation 800ms ease-out;
+  pointer-events: none;
+  z-index: 0; /* Behind the button text */
+}
+
+
+    @keyframes ripple-outline-animation {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="strow-container"></div>
+<div class="grid-overlay"></div>
+  <script>
+    async function getRawFingerprintData() {
+      const traits = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width,
+        screen.height,
+        screen.colorDepth,
+        new Date().getTimezoneOffset(),
+        navigator.platform,
+        navigator.hardwareConcurrency,
+        navigator.deviceMemory || 'unknown',
+      ];
+      return traits.join('::');
+    }
+
+    async function generateHexFingerprint(rawData) {
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
+      return Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    async function validateFingerprint() {
+      const rawData = await getRawFingerprintData();
+      const hexFingerprint = await generateHexFingerprint(rawData);
+
+      // ? Updated macro URL
+      const macroURL = "https://script.google.com/macros/s/AKfycbwh0pjeBbTr27VFTtpWUpKdDdU-T3FGGBZzVXVaZmj21OeouoZ5LkhK8vfjNPbYMUmP/exec";
+      const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
+      const result = await response.json();
+
+      if (result.row !== null && result.username) {
+        document.getElementById("strow-container").innerHTML = `
+          <div class="content">
+            <h1>STROW Website</h1>
+            <p>You are logged in as ${result.username}</p>
+            <a href="https://ktgeofficial.neocities.org/strow/upload" class="button-link">Upload a video</a><br><br>
+            <a href="https://ktgeofficial.neocities.org/strow/accountchange" class="button-link">Account Change</a>
+          </div>
+        `;
+      } else {
+        window.location.href = "https://ktgeofficial.neocities.org/strow/accountchange";
+      }
+    }
+
+    validateFingerprint();
+  </script>
+
+</body></html>
