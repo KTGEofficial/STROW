@@ -98,6 +98,10 @@
       transform: scale(0.98);
       box-shadow: 0 2px 6px rgba(0, 255, 127, 0.2);
     }
+
+    iframe {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -113,12 +117,12 @@
       </select>
 
       <p><label for="username">Username:</label></p>
-      <input type="text" id="username" name="username" required="">
+      <input type="text" id="username" name="username" required>
 
       <p><label for="password">Password:</label></p>
-      <input type="password" id="password" name="password" required="">
+      <input type="password" id="password" name="password" required>
 
-      <div id="confirmPasswordSection">
+      <div id="confirmPasswordSection" style="display: none;">
         <p><label for="confirm">Confirm Password:</label></p>
         <input type="password" id="confirm" name="confirm">
       </div>
@@ -127,89 +131,85 @@
       <input type="email" id="email" name="email">
 
       <br><br>
-      <input type="submit" id="submitBtn" name="action" value="Sign Up">
+      <input type="submit" id="submitBtn" name="action" value="Log In">
       <br><br>
-      <input type="button" id="forgotBtn" value="Forgot Password">
+      <input type="button" id="forgotBtn" value="Forgot Password" style="display: inline-block;">
     </form>
 
-    <script>
-      const modeSelect = document.getElementById('modeSelect');
-      const confirmSection = document.getElementById('confirmPasswordSection');
-      const submitBtn = document.getElementById('submitBtn');
-      const forgotBtn = document.getElementById('forgotBtn');
-
-      modeSelect.addEventListener('change', () => {
-        const mode = modeSelect.value;
-        if (mode === 'login') {
-          confirmSection.style.display = 'none';
-          forgotBtn.style.display = 'inline-block';
-          submitBtn.value = 'Log In';
-        } else {
-          confirmSection.style.display = 'block';
-          forgotBtn.style.display = 'none';
-          submitBtn.value = 'Sign Up';
-        }
-      });
-
-      modeSelect.dispatchEvent(new Event('change'));
-
-      document.getElementById('strowForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = {
-          mode: modeSelect.value,
-          username: username.value,
-          password: password.value,
-          confirm: confirm.value,
-          email: email.value,
-          action: submitBtn.value
-        };
-
-        const response = await fetch('https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec', {
-          method: 'POST',
-          body: JSON.stringify(formData),
-          headers: { 'Content-Type': 'application/json' }
-        });
-
-        const result = await response.json();
-        if (result.approved) {
-          const fingerprint = await getDeviceFingerprint();
-          const fingerprintResponse = await fetch('https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec', {
-            method: 'POST',
-            body: JSON.stringify({ fingerprint }),
-            headers: { 'Content-Type': 'application/json' }
-          });
-
-          const finalResult = await fingerprintResponse.json();
-          if (finalResult.redirect) {
-            window.location.href = '/homepage';
-          }
-        } else {
-          alert('Access denied or invalid credentials.');
-        }
-      });
-
-      forgotBtn.addEventListener('click', async () => {
-        const formData = {
-          mode: 'forgot',
-          username: username.value,
-          email: email.value,
-          action: 'Forgot Password'
-        };
-
-        const response = await fetch('https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec', {
-          method: 'POST',
-          body: JSON.stringify(formData),
-          headers: { 'Content-Type': 'application/json' }
-        });
-
-        const result = await response.json();
-        alert(result.message || 'Password recovery initiated.');
-      });
-
-      async function getDeviceFingerprint() {
-        return navigator.userAgent + '|' + screen.width + 'x' + screen.height;
-      }
-    </script>
+    <iframe name="hiddenFrame" id="hiddenFrame"></iframe>
   </div>
+
+  <script>
+    const modeSelect = document.getElementById('modeSelect');
+    const confirmSection = document.getElementById('confirmPasswordSection');
+    const submitBtn = document.getElementById('submitBtn');
+    const forgotBtn = document.getElementById('forgotBtn');
+
+    modeSelect.addEventListener('change', () => {
+      const mode = modeSelect.value;
+      if (mode === 'login') {
+        confirmSection.style.display = 'none';
+        forgotBtn.style.display = 'inline-block';
+        submitBtn.value = 'Log In';
+      } else {
+        confirmSection.style.display = 'block';
+        forgotBtn.style.display = 'none';
+        submitBtn.value = 'Sign Up';
+      }
+    });
+
+    modeSelect.dispatchEvent(new Event('change'));
+
+    async function getDeviceFingerprint() {
+      return navigator.userAgent + '|' + screen.width + 'x' + screen.height;
+    }
+
+    function createIframeForm(data) {
+      const form = document.createElement('form');
+      form.action = 'https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec';
+      form.method = 'POST';
+      form.target = 'hiddenFrame';
+      form.style.display = 'none';
+
+      for (const key in data) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = data[key];
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => form.remove(), 1000);
+    }
+
+    document.getElementById('strowForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fingerprint = await getDeviceFingerprint();
+      const data = {
+        mode: modeSelect.value,
+        username: username.value,
+        password: password.value,
+        confirm: confirm.value,
+        email: email.value,
+        action: submitBtn.value,
+        fingerprint
+      };
+      createIframeForm(data);
+    });
+
+    forgotBtn.addEventListener('click', async () => {
+      const fingerprint = await getDeviceFingerprint();
+      const data = {
+        mode: 'forgot',
+        username: username.value,
+        email: email.value,
+        action: 'Forgot Password',
+        fingerprint
+      };
+      createIframeForm(data);
+    });
+  </script>
 </body>
 </html>
