@@ -144,7 +144,8 @@
   const forgotBtn = document.getElementById('forgotBtn');
   const form = document.getElementById('strowForm');
 
-  const endpoint = 'https://script.google.com/macros/s/AKfycbyvV3RK0oIc9LrZxrLfoIQQe7V0P-HRfln-YxItOYYuphPIh_ELbNclc7Ma0f5Bzg-9/exec';
+  const endpoint = 'https://script.google.com/macros/s/AKfycbzlc4iQLhFV_x10cpQsN2-nc9Kpk0vKx0ahL3-Rat58FrGPpJKdSSp8c6S422fwo7Q/exec';
+  const fallbackURL = 'https://ktgeofficial.github.io/STROW/accountchange.html';
 
   modeSelect.addEventListener('change', () => {
     const mode = modeSelect.value;
@@ -159,9 +160,9 @@
     return navigator.userAgent + '|' + screen.width + 'x' + screen.height;
   }
 
-  function sendGetRequest(data) {
+  function redirectWithQuery(data) {
     const query = new URLSearchParams(data).toString();
-    fetch(`${endpoint}?${query}`, { method: 'GET', mode: 'no-cors' });
+    window.location.href = `${endpoint}?${query}`;
   }
 
   form.addEventListener('submit', async (e) => {
@@ -176,23 +177,34 @@
       action: submitBtn.value,
       fingerprint
     };
-    sendGetRequest(data);
+    redirectWithQuery(data);
   });
 
   forgotBtn.addEventListener('click', async () => {
     const fingerprint = await getDeviceFingerprint();
     const data = {
-      mode: 'forgot',
+      mode: 'login', // must match macro logic
       username: username.value,
       email: email.value,
       action: 'Forgot Password',
       fingerprint
     };
-    sendGetRequest(data);
+    redirectWithQuery(data);
+  });
+
+  // Optional: bounce back if macro doesn't redirect
+  window.addEventListener('load', () => {
+    const currentURL = window.location.href;
+    if (currentURL.includes(endpoint)) {
+      setTimeout(() => {
+        window.location.href = fallbackURL;
+      }, 3000); // Wait 3 seconds before returning
+    }
   });
 </script>
 
 </body>
 </html>
+
 
 
