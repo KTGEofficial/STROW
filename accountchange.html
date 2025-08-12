@@ -170,7 +170,7 @@ input[type="button"]:active {
 
     const result = await response.json();
     if (result.approved) {
-      const fingerprint = await getDeviceFingerprint(); // You’ll define this
+      const fingerprint = await getDeviceFingerprint(); // Youâ€™ll define this
       const fingerprintResponse = await fetch('YOUR_SCRIPT_URL', {
         method: 'POST',
         body: JSON.stringify({ fingerprint }),
