@@ -110,7 +110,7 @@ button:active {
   <p>Password:</p><input type="password" id="password">
   <p id="confirmlabel">Confirm Password:</p><input type="password" id="confirm">
   <p>Optional Recovery Email:</p><input type="email" id="email">
-  <br><br><button class="button" onclick="submitLogin()" id="accountchange">Login</button><br><br><button class="button" onclick="submitRecovery()" id="recoverybutton">Forgot Password</button>
+  <br><br><button class="button" onclick="submitLogin()" id="accountchange">Log In</button><br><br><button class="button" onclick="submitRecovery()" id="recoverybutton">Forgot Password</button>
   
   
   <div class="status" id="status"></div>
@@ -230,7 +230,7 @@ button:active {
       recoveryButton.style.display = 'inline-block';
 
       // Update button text and behavior
-      accountChangeButton.textContent = 'Login';
+      accountChangeButton.textContent = 'Log In';
       accountChangeButton.setAttribute('onclick', 'submitLogin()');
     } else if (mode === 'signup') {
       // Show confirm fields
@@ -241,7 +241,7 @@ button:active {
       recoveryButton.style.display = 'none';
 
       // Update button text and behavior
-      accountChangeButton.textContent = 'Signup';
+      accountChangeButton.textContent = 'Sign Up';
       accountChangeButton.setAttribute('onclick', 'submitSignup()');
     }
   }
@@ -259,3 +259,4 @@ button:active {
 
 
 </body></html>
+
