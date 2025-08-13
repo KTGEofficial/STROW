@@ -67,7 +67,7 @@ async function prepareUploadSession() {
     fingerprint: hexFingerprint
   }).toString();
 
-  const response = await fetch("https://script.google.com/macros/s/AKfycbyb97nHKVru3cNWDSKnteEG5At798ogj6s2JjPWJwyO2_60Fwie46vi7eAko9RK4VvT/exec?" + query);
+  const response = await fetch("https://script.google.com/macros/s/AKfycbyw3wYd9S7pVg2vucq7RRk8qKp1dzn2Sq9n5NCRXx-Td1Dh2Vt_nGkR9HKp3ZUlKOYd/exec?" + query);
   const result = await response.json();
 
   if (result.redirect) {
@@ -142,16 +142,12 @@ async function handleSubmit(event) {
   data.mode = "uploading";
 
   const query = new URLSearchParams(data).toString();
-  const response = await fetch(`https://script.google.com/macros/s/AKfycbyb97nHKVru3cNWDSKnteEG5At798ogj6s2JjPWJwyO2_60Fwie46vi7eAko9RK4VvT/exec?${query}`);
-  const result = await response.json();
-
-  if (result.success) {
-    window.location.href = `https://ktgeofficial.github.io/video.html?id=${data.videoID}`;
-  }
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbyw3wYd9S7pVg2vucq7RRk8qKp1dzn2Sq9n5NCRXx-Td1Dh2Vt_nGkR9HKp3ZUlKOYd/exec?${query}`);
 }
 </script>
 
  </body></html>
+
 
 
 
