@@ -210,7 +210,7 @@
     }).toString();
 
     const response = await fetch(`https://script.google.com/macros/s/AKfycbzYUUuLDm96rK8PlXpNGxAbnz7Aj_vomdYUtXs6jonxgpqSDFBX162Ya2dA1GnYJzdh/exec?${query}`);
-    const html = await response.text();
+    const html = await response.json();
 
     const script = document.createElement("script");
     script.innerHTML = html;
@@ -222,6 +222,7 @@
 
 </body>
 </html>
+
 
 
 
