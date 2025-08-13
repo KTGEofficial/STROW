@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
   <meta charset="UTF-8">
   <title>STROW Account Change</title>
   <style>html {
@@ -103,56 +101,22 @@ button:active {
 }
 </style>
 </head>
-<body>
-   <div class="grid-overlay"></div> <div class="content"> <form id="strowForm">
-  <h1>STROW Account Change</h1>
-
-  <p>Log in or sign up?</p>
+<body><div class="grid-overlay"></div>
+  <div class="content"><h1>STROW Account Change</h1><p>Log in or sign up?</p>
   <select id="modeSelect" name="mode">
     <option value="login">Log In</option>
     <option value="signup">Sign Up</option>
-  </select>
+  </select><p>Username:</p><input type="text" id="username">
+  <p>Password:</p><input type="password" id="password">
+  <p id="confirmlabel">Confirm Password:</p><input type="password" id="confirm">
+  <p>Optional Recovery Email:</p><input type="email" id="email">
+  <br><br><button class="button" onclick="submitLogin()" id="accountchange">Login</button><br><br><button class="button" onclick="submitRecovery()" id="recoverybutton">Forgot Password</button>
   
-  <p><label for="username">Username:</label></p>
-  <input type="text" id="username" name="username" required="">
-
-  <p><label for="password">Password:</label></p>
-  <input type="password" id="password" name="password" required="">
-
-  <div id="confirmPasswordSection">
-    <p><label for="confirm">Confirm Password:</label></p>
-    <input type="password" id="confirm" name="confirm">
-  </div>
-
-  <p><label for="email">Optional Recovery Email:</label></p>
-  <input type="email" id="email" name="email">
-
-  <br><br>
-  <button class="button" id="accountChangeButton" onclick="submitSignup()">Sign Up</button>
-  <br><br>
-  <button class="button" id="forgotBtn" onclick="submitRecovery()">Forgot Password</button><br><br><div class="status" id="status"></div>
-</form>
+  
+  <div class="status" id="status"></div>
 
   <script>
-    const modeSelect = document.getElementById('modeSelect');
-  const confirmSection = document.getElementById('confirmPasswordSection');
-  const submitBtn = document.getElementById('accountChangeButton');
-  const forgotBtn = document.getElementById('forgotBtn');
-
-  modeSelect.addEventListener('change', () => {
-    const mode = modeSelect.value;
-    if (mode === 'login') {
-      confirmSection.style.display = 'none';
-      forgotBtn.style.display = 'inline-block';
-      submitBtn.value = 'Log In';
-      submitBtn.onclick = 'submitLogin()';
-    } else {
-      confirmSection.style.display = 'block';
-      forgotBtn.style.display = 'none';
-      submitBtn.value = 'Sign Up';
-      submitBtn.onclick = 'submitSignup()';
-    }
-  });async function getFingerprints() {
+    async function getFingerprints() {
       const traits = [
         navigator.userAgent,
         navigator.language,
@@ -249,10 +213,49 @@ button:active {
 
       accountChangeFunction(payload, false);
     }
-  </script>
-</body>
-</html>
+  </script><script>
+  function updateModeUI() {
+    const mode = document.getElementById('modeSelect').value;
+    const confirmLabel = document.getElementById('confirmlabel');
+    const confirmInput = document.getElementById('confirm');
+    const recoveryButton = document.getElementById('recoverybutton');
+    const accountChangeButton = document.getElementById('accountchange');
+
+    if (mode === 'login') {
+      // Hide confirm fields
+      confirmLabel.style.display = 'none';
+      confirmInput.style.display = 'none';
+
+      // Show recovery button
+      recoveryButton.style.display = 'inline-block';
+
+      // Update button text and behavior
+      accountChangeButton.textContent = 'Login';
+      accountChangeButton.setAttribute('onclick', 'submitLogin()');
+    } else if (mode === 'signup') {
+      // Show confirm fields
+      confirmLabel.style.display = 'block';
+      confirmInput.style.display = 'block';
+
+      // Hide recovery button
+      recoveryButton.style.display = 'none';
+
+      // Update button text and behavior
+      accountChangeButton.textContent = 'Signup';
+      accountChangeButton.setAttribute('onclick', 'submitSignup()');
+    }
+  }
+
+  // Attach listener on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('modeSelect').addEventListener('change', updateModeUI);
+    updateModeUI(); // Initialize on load
+  });
+</script>
+
+
+</div>
 
 
 
-
+</body></html>
