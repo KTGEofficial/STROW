@@ -2,85 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>STROW Auth</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2em;
-      background: linear-gradient(to right, #f0f4ff, #e0eaff);
-      color: #333;
-    }
+  <title>STROW Account Change</title>
+  <style>/* Unified input styling */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+  background-color: white;
+  border: 3px solid transparent;
+  border-radius: 1rem;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  text-align: center;
+  font-family: sans-serif;
 
-    h2 {
-      margin-bottom: 0.5em;
-    }
+  background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F), white;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 
-    input {
-      margin: 0.5em 0;
-      padding: 0.6em;
-      width: 100%;
-      max-width: 300px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+  box-shadow: 0 0 8px rgba(0, 255, 127, 0.4);
+  transition: box-shadow 0.3s ease;
+}
 
-    .button {
-      position: relative;
-      overflow: hidden;
-      margin: 0.5em 0;
-      padding: 0.6em 1.2em;
-      border: none;
-      border-radius: 4px;
-      background: linear-gradient(to right, #6a8eff, #4e6bff);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+/* Focus glow */
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+select:focus,
+textarea:focus {
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
 
-    .button:hover {
-      background: linear-gradient(to right, #4e6bff, #6a8eff);
-    }
+/* Button styling replaces input[type="submit"] and input[type="button"] */
+button {
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F);
+  box-shadow: 0 4px 8px rgba(0, 255, 127, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-family: sans-serif;
+}
 
-    .button::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.4s ease, height 0.4s ease;
-    }
+/* Hover and active effects for buttons */
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 255, 127, 0.4);
+}
 
-    .button:active::after {
-      width: 200px;
-      height: 200px;
-      transition: 0s;
-    }
-
-    .status {
-      margin-top: 1em;
-      color: red;
-      font-weight: bold;
-    }
-  </style>
+button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 255, 127, 0.2);
+}
+</style>
 </head>
 <body>
-  <h2>STROW Signup / Login</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <input type="password" id="confirm" placeholder="Confirm Password (for signup)">
-  <input type="email" id="email" placeholder="Email (for signup or recovery)">
-  <button class="button" onclick="submitSignup()">Sign Up</button>
-  <button class="button" onclick="submitLogin()">Login</button>
-  <button class="button" onclick="submitRecovery()">Forgot Password</button>
-  <div class="status" id="status"></div>
+   <div class="grid-overlay"></div> <div class="content"> <form id="strowForm">
+  <h1>STROW Account Change</h1>
+
+  <p>Log in or sign up?</p>
+  <select id="modeSelect" name="mode">
+    <option value="login">Log In</option>
+    <option value="signup">Sign Up</option>
+  </select>
+  
+  <p><label for="username">Username:</label></p>
+  <input type="text" id="username" name="username" required="">
+
+  <p><label for="password">Password:</label></p>
+  <input type="password" id="password" name="password" required="">
+
+  <div id="confirmPasswordSection">
+    <p><label for="confirm">Confirm Password:</label></p>
+    <input type="password" id="confirm" name="confirm">
+  </div>
+
+  <p><label for="email">Optional Recovery Email:</label></p>
+  <input type="email" id="email" name="email">
+
+  <br><br>
+  <button class="button" id="accountChangeButton" onclick="submitSignup()">Sign Up</button>
+  <br><br>
+  <button class="button" id="forgotBtn" onclick="submitRecovery()">Forgot Password</button><br><br><div class="status" id="status"></div>
+</form>
 
   <script>
-    async function getFingerprints() {
+    const modeSelect = document.getElementById('modeSelect');
+  const confirmSection = document.getElementById('confirmPasswordSection');
+  const submitBtn = document.getElementById('accountChangeButton');
+  const forgotBtn = document.getElementById('forgotBtn');
+
+  modeSelect.addEventListener('change', () => {
+    const mode = modeSelect.value;
+    if (mode === 'login') {
+      confirmSection.style.display = 'none';
+      forgotBtn.style.display = 'inline-block';
+      submitBtn.value = 'Log In';
+      submitBtn.onclick = 'submitLogin()';
+    } else {
+      confirmSection.style.display = 'block';
+      forgotBtn.style.display = 'none';
+      submitBtn.value = 'Sign Up';
+      submitBtn.onclick = 'submitSignup()';
+    }
+  });async function getFingerprints() {
       const traits = [
         navigator.userAgent,
         navigator.language,
@@ -180,5 +213,6 @@
   </script>
 </body>
 </html>
+
 
 
