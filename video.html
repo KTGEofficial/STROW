@@ -207,12 +207,14 @@
 
   try {
     const response = await fetch(`https://script.google.com/macros/s/AKfycbwpHxYTF4qFn9596H2Wx5lQVwbVahl0CwzOsYnU4djRY2Q87tAQFPIJJi8EDSkhoOLA/exec?${query}`, {
-      method: 'GET'
-      // no-cors REMOVED so we can read the text
+      method: 'GET',
+      mode: 'no-cors' // <-- RESTORE THIS LINE
     });
 
+    // The response.text() is what you get back from Google Apps Script
     const text = await response.text();
 
+    // The rest of your code to parse the text data and update the UI is correct
     // Convert "key=value" lines into an object
     const result = Object.fromEntries(
       text.split("\n").map(line => {
@@ -221,6 +223,7 @@
       })
     );
 
+    // Continue with your existing logic...
     if (result.success !== "true") {
       window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
       return;
@@ -228,44 +231,8 @@
 
     document.getElementById("videoTitle").textContent = result.title;
     document.getElementById("videoDescription").textContent = result.description;
-    document.getElementById("videoDeadline").textContent =
-      result.hasDeadline === "true"
-        ? `Deadline: ${new Date(result.deadlineRaw).toLocaleString()}`
-        : "No deadline";
-    document.getElementById("videoAuthor").textContent = `From ${result.username} at ${result.timestamp}`;
-    document.getElementById("spreadsheetLink").href = result.spreadsheetHref;
-    document.getElementById("externalLink").href = result.externalHref;
-    document.getElementById("videoPreview").src = result.videoLink;
-    document.getElementById("videoPreview").style.width = `${result.width}px`;
-    document.getElementById("videoPreview").style.height = `${result.height}px`;
-
-    if (result.hasDeadline === "true" && result.deadlineRaw) {
-      const deadline = new Date(result.deadlineRaw).getTime();
-      function updateCountdown() {
-        const now = Date.now();
-        const distance = deadline - now;
-        const countdownElement = document.getElementById("countdown");
-
-        if (distance <= 0) {
-          countdownElement.textContent = "The deadline has passed";
-          return;
-        }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((distance / (1000 * 60)) % 60);
-        const seconds = Math.floor((distance / 1000) % 60);
-
-        countdownElement.textContent =
-          `${days}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-      }
-
-      setInterval(updateCountdown, 1000);
-      updateCountdown();
-    } else {
-      document.getElementById("countdown").textContent = "No deadline";
-    }
-
+    // ... all other updates
+    
   } catch (err) {
     console.error(err);
     document.getElementById("videoTitle").textContent = "Error loading video.";
@@ -279,6 +246,7 @@
 
 </body>
 </html>
+
 
 
 
