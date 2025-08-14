@@ -192,71 +192,55 @@
   }
 
   async function loadVideoData() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
 
-  if (!id) {
-    window.location.href = "https://ktgeofficial.github.io/STROW/";
-    return;
-  }
-
-  const rawData = await getRawFingerprintData();
-  const fingerprint = await generateHexFingerprint(rawData);
-
-  const query = new URLSearchParams({ mode: "watch", id, fingerprint }).toString();
-
-  try {
-    const response = await fetch(`https://script.google.com/macros/s/AKfycbw5vVlY0eqDymgbpUJAnZeQ90lSZElmw6hLI1_C_Zf9XhbqQmuDLIkVRskQLkc38rv9/exec?${query}`, {
-      method: 'GET',
-      mode: 'no-cors' // <-- RESTORE THIS LINE
-    });
-
-    // The response.text() is what you get back from Google Apps Script
-    const text = await response.text();
-
-    // The rest of your code to parse the text data and update the UI is correct
-    // Convert "key=value" lines into an object
-    const result = Object.fromEntries(
-      text.split("\n").map(line => {
-        const idx = line.indexOf("=");
-        return [line.slice(0, idx), decodeURIComponent(line.slice(idx + 1))];
-      })
-    );
-
-    // Continue with your existing logic...
-    if (result.success !== "true") {
-      console.log(result); // window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
+    if (!id) {
+      window.location.href = "https://ktgeofficial.github.io/STROW/";
       return;
     }
 
-    document.getElementById("videoTitle").textContent = result.title;
-    document.getElementById("videoDescription").textContent = result.description;
-    // ... all other updates
-    
-  } catch (err) {
-    console.error(err);
-    document.getElementById("videoTitle").textContent = "Error loading video.";
+    const rawData = await getRawFingerprintData();
+    const fingerprint = await generateHexFingerprint(rawData);
+
+    const query = new URLSearchParams({ 
+      mode: "watch", 
+      id, 
+      fingerprint 
+    }).toString();
+
+    try {
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbzLev-5GZyU7E1Mf_qHLzsfTAVFxddsfTWsYznR8DMnAUw5Ao0qlLQVfCihVZr6YVb1/exec?${query}`);
+      const result = await response.json();
+
+      if (!result.success) {
+        console.log(result);
+        // Optional: redirect on fail
+        // window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
+        return;
+      }
+
+      document.getElementById("videoTitle").textContent = result.title || "Untitled Video";
+      document.getElementById("videoDescription").textContent = result.description || "";
+      document.getElementById("videoAuthor").textContent = `From ${result.author || "Unknown"} at ${result.time || "Unknown"}`;
+      document.getElementById("videoDeadline").textContent = `Deadline: ${result.deadline || "Not set"}`;
+      document.getElementById("spreadsheetLink").href = result.spreadsheet || "#";
+      document.getElementById("externalLink").href = result.external || "#";
+      document.getElementById("commentCount").textContent = `${result.comments || 0} Comments`;
+
+      if (result.video) {
+        document.getElementById("videoPreview").src = result.video;
+      }
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("videoTitle").textContent = "Error loading video.";
+    }
   }
-}
-
-
 
   loadVideoData();
 </script>
 
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
