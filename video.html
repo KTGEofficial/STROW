@@ -297,11 +297,74 @@ descriptionContainer.innerHTML = ""; // clear old content
     descriptionContainer.appendChild(p);
   });
 
-      document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false) || result.uploadDate}`;
-      document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true) || result.deadlineRaw}`;
-      document.getElementById("spreadsheetLink").href = result.spreadsheetHref || "#";
-      document.getElementById("externalLink").href = result.externalHref || "#";
-      document.getElementById("commentCount").textContent = `${result.comments || 0} Comments`;
+      async function makeLink(url, fallbackText, fetchTitle = false) {
+  if (!url) return document.createTextNode(fallbackText);
+
+  let text = url;
+
+  // Optional: fetch page title
+  if (fetchTitle && /^https?:\/\//i.test(url)) {
+    try {
+      const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+      const data = await response.json();
+      const match = data.contents.match(/<title>(.*?)<\/title>/i);
+      if (match && match[1]) {
+        text = match[1].trim();
+      }
+    } catch (e) {
+      console.warn("Could not fetch title for:", url, e);
+    }
+  }
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  a.textContent = text;
+
+  return a;
+}
+
+(async () => {
+  const authorElement = document.getElementById("videoAuthor");
+  authorElement.textContent = "From ";
+
+  // Detect if author is a URL or just text
+  if (/^(https?:|data:)/i.test(result.author)) {
+    const link = await makeLink(result.author, result.author, true /* fetchTitle optional */);
+    authorElement.appendChild(link);
+  } else {
+    authorElement.appendChild(document.createTextNode(result.author));
+  }
+
+  authorElement.appendChild(document.createTextNode(` at ${formatDeadline(result.uploadDate, false) || result.uploadDate}`));
+
+  document.getElementById("videoDeadline").textContent =
+    `Deadline: ${formatDeadline(result.deadlineRaw, true) || result.deadlineRaw}`;
+
+  // Spreadsheet Link
+  const spreadsheetLink = document.getElementById("spreadsheetLink");
+  if (result.spreadsheetHref) {
+    const link = await makeLink(result.spreadsheetHref, "Spreadsheet");
+    spreadsheetLink.replaceWith(link);
+    link.id = "spreadsheetLink"; // Keep same ID if needed
+  } else {
+    spreadsheetLink.href = "#";
+  }
+
+  // External Link
+  const externalLink = document.getElementById("externalLink");
+  if (result.externalHref) {
+    const link = await makeLink(result.externalHref, "External");
+    externalLink.replaceWith(link);
+    link.id = "externalLink"; // Keep same ID if needed
+  } else {
+    externalLink.href = "#";
+  }
+
+  document.getElementById("commentCount").textContent =
+    `${result.comments || 0} Comments`;
+})();
 
       if (result.videoLink) {
         document.getElementById("videoPreview").src = result.videoLink;
@@ -323,5 +386,6 @@ setInterval(() => updateCountdown("2025-08-15T12:00:00.000Z", true), 1000);
 
 </body>
 </html>
+
 
 
