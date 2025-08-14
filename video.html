@@ -191,6 +191,71 @@
       .join('');
   }
 
+function updateCountdown(deadlineUTC, hasDeadline) {
+  const countdownElement = document.getElementById("countdown");
+
+  if (!hasDeadline) {
+    countdownElement.textContent = "No deadline";
+    return;
+  }
+
+  const deadline = new Date(deadlineUTC).getTime(); // Convert to local automatically
+  const now = Date.now();
+  const distance = deadline - now;
+
+  if (distance <= 0) {
+    countdownElement.textContent = "The deadline has passed";
+    return;
+  }
+
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((distance / (1000 * 60)) % 60);
+  const seconds = Math.floor((distance / 1000) % 60);
+
+  let parts = [];
+
+  if (days >= 1) {
+    parts.push(`${days}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+  } else if (hours >= 1) {
+    const hoursStr = hours >= 10 ? hours : hours.toString(); // remove leading zero if <10
+    parts.push(`${hoursStr}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+  } else if (minutes >= 1) {
+    const minutesStr = minutes >= 10 ? minutes : minutes.toString(); // remove leading zero if <10
+    parts.push(`${minutesStr}:${String(seconds).padStart(2, '0')}`);
+  } else {
+    parts.push(`${seconds} seconds`);
+  }
+
+  countdownElement.textContent = parts.join("");
+}
+
+function formatDeadline(dateString, includeTime = false) {
+  const date = new Date(dateString); // Local time
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  let formatted = date.toLocaleDateString(undefined, options);
+
+  // Add ordinal suffix (1st, 2nd, 3rd, 4th...)
+  const day = date.getDate();
+  const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
+                 (day % 10 === 2 && day !== 12) ? 'nd' :
+                 (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+  formatted = formatted.replace(/\d+/, day + suffix);
+
+  if (includeTime) {
+    const timeOptions = {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZoneName: 'short' // 'short' will give abbreviations like 'EST', 'PST'
+    };
+    const localTime = date.toLocaleTimeString(undefined, timeOptions);
+    formatted += ` at ${localTime}`;
+  }
+
+  return formatted;
+}
+
   async function loadVideoData() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
@@ -232,8 +297,8 @@ descriptionContainer.innerHTML = ""; // clear old content
     descriptionContainer.appendChild(p);
   });
 
-      document.getElementById("videoAuthor").textContent = `From ${result.author || "Not set"} at ${result.uploadDate || "Unknown"}`;
-      document.getElementById("videoDeadline").textContent = `Deadline: ${result.deadlineRaw || "Not set"}`;
+      document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false) || result.uploadDate}`;
+      document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true) || result.deadlineRaw}`;
       document.getElementById("spreadsheetLink").href = result.spreadsheetHref || "#";
       document.getElementById("externalLink").href = result.externalHref || "#";
       document.getElementById("commentCount").textContent = `${result.comments || 0} Comments`;
@@ -251,9 +316,12 @@ descriptionContainer.innerHTML = ""; // clear old content
   }
 
   loadVideoData();
+updateCountdown("2025-08-15T12:00:00.000Z", true);
+setInterval(() => updateCountdown("2025-08-15T12:00:00.000Z", true), 1000);
 </script>
 
 
 </body>
 </html>
+
 
