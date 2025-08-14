@@ -167,30 +167,32 @@
 
   <h2 id="commentCount">0 Comments</h2>
 </form></div>
-<script>
-  async function getRawFingerprintData() {
-    const traits = [
-      navigator.userAgent,
-      navigator.language,
-      screen.width,
-      screen.height,
-      screen.colorDepth,
-      new Date().getTimezoneOffset(),
-      navigator.platform,
-      navigator.hardwareConcurrency,
-      navigator.deviceMemory || 'unknown',
-    ];
-    return traits.join('::');
-  }
+<script>// Function to get raw fingerprint data from various browser traits
+async function getRawFingerprintData() {
+  const traits = [
+    navigator.userAgent,
+    navigator.language,
+    screen.width,
+    screen.height,
+    screen.colorDepth,
+    new Date().getTimezoneOffset(),
+    navigator.platform,
+    navigator.hardwareConcurrency,
+    navigator.deviceMemory || 'unknown',
+  ];
+  return traits.join('::');
+}
 
-  async function generateHexFingerprint(rawData) {
-    const encoder = new TextEncoder();
-    const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
-    return Array.from(new Uint8Array(buffer))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
+// Function to generate a SHA-256 hash from the raw fingerprint data
+async function generateHexFingerprint(rawData) {
+  const encoder = new TextEncoder();
+  const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
+  return Array.from(new Uint8Array(buffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
+// Function to update the countdown display
 function updateCountdown(deadlineUTC, hasDeadline) {
   const countdownElement = document.getElementById("countdown");
 
@@ -230,6 +232,7 @@ function updateCountdown(deadlineUTC, hasDeadline) {
   countdownElement.textContent = parts.join("");
 }
 
+// Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false) {
   const date = new Date(dateString); // Local time
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -256,136 +259,132 @@ function formatDeadline(dateString, includeTime = false) {
   return formatted;
 }
 
-  async function loadVideoData() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
+// Main function to load video data and update the page
+async function loadVideoData() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-    if (!id) {
-      window.location.href = "https://ktgeofficial.github.io/STROW/";
+  if (!id) {
+    window.location.href = "https://ktgeofficial.github.io/STROW/";
+    return;
+  }
+
+  const rawData = await getRawFingerprintData();
+  const fingerprint = await generateHexFingerprint(rawData);
+
+  const query = new URLSearchParams({ 
+    mode: "watch", 
+    id, 
+    fingerprint 
+  }).toString();
+
+  try {
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbwmdFNZ4Vz_mYGub2uGSTHhGE6rtM5C_fys983BT69nPeaR0bsM7mb-CNuhsRjgC6wR/exec?${query}`);
+    const result = await response.json();
+
+    if (!result.success) {
+      console.log(result);
+      // Optional: redirect on fail
+    window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
       return;
     }
 
-    const rawData = await getRawFingerprintData();
-    const fingerprint = await generateHexFingerprint(rawData);
+    // Helper to create clickable <a> tags with optional page title fetching
+    async function makeLink(url, fetchTitle = false) {
+      let text = url;
 
-    const query = new URLSearchParams({ 
-      mode: "watch", 
-      id, 
-      fingerprint 
-    }).toString();
-
-    try {
-      const response = await fetch(`https://script.google.com/macros/s/AKfycbwmdFNZ4Vz_mYGub2uGSTHhGE6rtM5C_fys983BT69nPeaR0bsM7mb-CNuhsRjgC6wR/exec?${query}`);
-      const result = await response.json();
-
-      if (!result.success) {
-        console.log(result);
-        // Optional: redirect on fail
-        // window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
-        return;
+      // Only fetch title for HTTP/HTTPS
+      if (fetchTitle && /^https?:\/\//i.test(url)) {
+        try {
+          const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+          const data = await response.json();
+          const match = data.contents.match(/<title>(.*?)<\/title>/i);
+          if (match && match[1]) text = match[1].trim();
+        } catch (e) {
+          console.warn("Could not fetch title for:", url, e);
+        }
       }
 
-      document.getElementById("videoTitle").textContent = result.title || "Untitled Video";
-      const descriptionContainer = document.getElementById("videoDescription");
-descriptionContainer.innerHTML = ""; // clear old content
-
-(result.description || "")
-  .split("\n")
-  .forEach(line => {
-    const p = document.createElement("p");
-    p.textContent = line;
-    descriptionContainer.appendChild(p);
-  });
-
-      async function makeLink(url, fallbackText, fetchTitle = false) {
-  if (!url) return document.createTextNode(fallbackText);
-
-  let text = url;
-
-  // Optional: fetch page title
-  if (fetchTitle && /^https?:\/\//i.test(url)) {
-    try {
-      const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-      const data = await response.json();
-      const match = data.contents.match(/<title>(.*?)<\/title>/i);
-      if (match && match[1]) {
-        text = match[1].trim();
-      }
-    } catch (e) {
-      console.warn("Could not fetch title for:", url, e);
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = text;
+      return a;
     }
+
+    // Function to convert text into <p> elements and linkify URLs
+    async function linkifyText(text, fetchTitle = false) {
+      const container = document.createDocumentFragment();
+
+      (text || "").split("\n").forEach(async line => {
+        const p = document.createElement("p");
+        let lastIndex = 0;
+
+        const urlRegex = /(https?:\/\/[^\s]+|data:[^\s]+)/gi;
+        const matches = [...line.matchAll(urlRegex)];
+
+        for (const match of matches) {
+          const index = match.index;
+          if (index > lastIndex) p.appendChild(document.createTextNode(line.slice(lastIndex, index)));
+          const link = await makeLink(match[0], fetchTitle);
+          p.appendChild(link);
+          lastIndex = index + match[0].length;
+        }
+
+        if (lastIndex < line.length) p.appendChild(document.createTextNode(line.slice(lastIndex)));
+        container.appendChild(p);
+      });
+
+      return container;
+    }
+
+    // Apply to videoTitle
+    (async () => {
+      const titleEl = document.getElementById("videoTitle");
+      titleEl.textContent = ""; // Clear old title
+      titleEl.appendChild(await linkifyText(result.title || "Untitled Video", true)); // fetchTitle optional
+
+      // Apply to description
+      const descriptionEl = document.getElementById("videoDescription");
+      descriptionEl.innerHTML = "";
+      descriptionEl.appendChild(await linkifyText(result.description || "", true));
+    })();
+
+    document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false) || result.uploadDate}`;
+    document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true) || result.deadlineRaw}`;
+    document.getElementById("spreadsheetLink").href = result.spreadsheetHref || "#";
+    document.getElementById("externalLink").href = result.externalHref || "#";
+    document.getElementById("commentCount").textContent = `${result.comments || 0} Comments`;
+    
+    // START OF DYNAMIC COUNTDOWN LOGIC
+    // Initial call to start the countdown
+    updateCountdown(result.deadlineRaw, !!result.deadlineRaw);
+    
+    // Set up the interval to update the countdown every second
+    setInterval(() => updateCountdown(result.deadlineRaw, !!result.deadlineRaw), 1000);
+    // END OF DYNAMIC COUNTDOWN LOGIC
+
+    if (result.videoLink) {
+      document.getElementById("videoPreview").src = result.videoLink;
+      document.getElementById("videoPreview").style.width = `${result.width}px`;
+      document.getElementById("videoPreview").style.height = `${result.height}px`;
+    }
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("videoTitle").textContent = "Error loading video.";
   }
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.target = "_blank";
-  a.rel = "noopener noreferrer";
-  a.textContent = text;
-
-  return a;
 }
 
-(async () => {
-  const authorElement = document.getElementById("videoAuthor");
-  authorElement.textContent = "From ";
+loadVideoData();
 
-  // Detect if author is a URL or just text
-  if (/^(https?:|data:)/i.test(result.author)) {
-    const link = await makeLink(result.author, result.author, true /* fetchTitle optional */);
-    authorElement.appendChild(link);
-  } else {
-    authorElement.appendChild(document.createTextNode(result.author));
-  }
-
-  authorElement.appendChild(document.createTextNode(` at ${formatDeadline(result.uploadDate, false) || result.uploadDate}`));
-
-  document.getElementById("videoDeadline").textContent =
-    `Deadline: ${formatDeadline(result.deadlineRaw, true) || result.deadlineRaw}`;
-
-  // Spreadsheet Link
-  const spreadsheetLink = document.getElementById("spreadsheetLink");
-  if (result.spreadsheetHref) {
-    const link = await makeLink(result.spreadsheetHref, "Spreadsheet");
-    spreadsheetLink.replaceWith(link);
-    link.id = "spreadsheetLink"; // Keep same ID if needed
-  } else {
-    spreadsheetLink.href = "#";
-  }
-
-  // External Link
-  const externalLink = document.getElementById("externalLink");
-  if (result.externalHref) {
-    const link = await makeLink(result.externalHref, "External");
-    externalLink.replaceWith(link);
-    link.id = "externalLink"; // Keep same ID if needed
-  } else {
-    externalLink.href = "#";
-  }
-
-  document.getElementById("commentCount").textContent =
-    `${result.comments || 0} Comments`;
-})();
-
-      if (result.videoLink) {
-        document.getElementById("videoPreview").src = result.videoLink;
-        document.getElementById("videoPreview").style.width = `${result.width}px`;
-        document.getElementById("videoPreview").style.height = `${result.height}px`;
-      }
-
-    } catch (err) {
-      console.error(err);
-      document.getElementById("videoTitle").textContent = "Error loading video.";
-    }
-  }
-
-  loadVideoData();
-updateCountdown("2025-08-15T12:00:00.000Z", true);
-setInterval(() => updateCountdown("2025-08-15T12:00:00.000Z", true), 1000);
 </script>
 
 
 </body>
 </html>
+
 
 
 
