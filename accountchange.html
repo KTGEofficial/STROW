@@ -139,7 +139,7 @@ button:active {
     async function accountChangeFunction(data, redirectOnSuccess = true) {
       try {
         const query = new URLSearchParams(data).toString();
-        const response = await fetch(`https://script.google.com/macros/s/AKfycby5pujOqyqNKocTz4z8_aplwuuu7Vl5mUgV4ILD6RA3Rn_mmasFpAf9_mMh11TV6Xd_/exec?${query}`);
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbwmdFNZ4Vz_mYGub2uGSTHhGE6rtM5C_fys983BT69nPeaR0bsM7mb-CNuhsRjgC6wR/exec?${query}`);
         const result = await response.json();
 
         if (result.success) {
@@ -259,4 +259,5 @@ button:active {
 
 
 </body></html>
+
 
