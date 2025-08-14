@@ -1,5 +1,5 @@
 <html><head>
-  <style>
+  <title>STROW Mainpage</title><style>
     html, body {
       margin: 0;
       padding: 0;
@@ -117,7 +117,7 @@
       const hexFingerprint = await generateHexFingerprint(rawData);
 
       // ? Updated macro URL
-      const macroURL = "https://script.google.com/macros/s/AKfycby5pujOqyqNKocTz4z8_aplwuuu7Vl5mUgV4ILD6RA3Rn_mmasFpAf9_mMh11TV6Xd_/exec";
+      const macroURL = "https://script.google.com/macros/s/AKfycbwmdFNZ4Vz_mYGub2uGSTHhGE6rtM5C_fys983BT69nPeaR0bsM7mb-CNuhsRjgC6wR/exec";
       const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
       const result = await response.json();
 
@@ -140,6 +140,7 @@
 
 
 </body></html>
+
 
 
 
