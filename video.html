@@ -201,7 +201,9 @@ function updateCountdown(deadlineUTC, hasDeadline) {
     return;
   }
 
-  const deadline = new Date(deadlineUTC).getTime(); // Convert to local automatically
+  // The Date object automatically interprets the string as UTC
+  // and converts it to the user's local time for calculations.
+  const deadline = new Date(deadlineUTC).getTime();
   const now = Date.now();
   const distance = deadline - now;
 
@@ -220,10 +222,10 @@ function updateCountdown(deadlineUTC, hasDeadline) {
   if (days >= 1) {
     parts.push(`${days}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
   } else if (hours >= 1) {
-    const hoursStr = hours >= 10 ? hours : hours.toString(); // remove leading zero if <10
+    const hoursStr = hours >= 10 ? hours : hours.toString();
     parts.push(`${hoursStr}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
   } else if (minutes >= 1) {
-    const minutesStr = minutes >= 10 ? minutes : minutes.toString(); // remove leading zero if <10
+    const minutesStr = minutes >= 10 ? minutes : minutes.toString();
     parts.push(`${minutesStr}:${String(seconds).padStart(2, '0')}`);
   } else {
     parts.push(`${seconds} seconds`);
@@ -234,7 +236,8 @@ function updateCountdown(deadlineUTC, hasDeadline) {
 
 // Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false) {
-  const date = new Date(dateString); // Local time
+  // Creates a Date object, which will be in the user's local time zone.
+  const date = new Date(dateString);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   let formatted = date.toLocaleDateString(undefined, options);
 
@@ -272,10 +275,10 @@ async function loadVideoData() {
   const rawData = await getRawFingerprintData();
   const fingerprint = await generateHexFingerprint(rawData);
 
-  const query = new URLSearchParams({ 
-    mode: "watch", 
-    id, 
-    fingerprint 
+  const query = new URLSearchParams({
+    mode: "watch",
+    id,
+    fingerprint
   }).toString();
 
   try {
@@ -285,7 +288,7 @@ async function loadVideoData() {
     if (!result.success) {
       console.log(result);
       // Optional: redirect on fail
-    window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
+      window.location.href = result.redirect || "https://ktgeofficial.github.io/STROW/";
       return;
     }
 
@@ -315,24 +318,23 @@ async function loadVideoData() {
 
     // Function to convert text into <p> elements and linkify URLs
     // Set video title with fallback
-const titleElement = document.getElementById("videoTitle");
-titleElement.textContent = result?.title?.trim();
+    const titleElement = document.getElementById("videoTitle");
+    titleElement.textContent = result?.title?.trim();
 
-// Clear and populate video description
-const descriptionContainer = document.getElementById("videoDescription");
-descriptionContainer.innerHTML = "";
+    // Clear and populate video description
+    const descriptionContainer = document.getElementById("videoDescription");
+    descriptionContainer.innerHTML = "";
 
-const descriptionLines = (result?.description || "").split("\n");
+    const descriptionLines = (result?.description || "").split("\n");
 
-descriptionLines.forEach(line => {
-  const trimmedLine = line.trim();
-  if (trimmedLine) {
-    const p = document.createElement("p");
-    p.textContent = trimmedLine;
-    descriptionContainer.appendChild(p);
-  }
-});
-
+    descriptionLines.forEach(line => {
+      const trimmedLine = line.trim();
+      if (trimmedLine) {
+        const p = document.createElement("p");
+        p.textContent = trimmedLine;
+        descriptionContainer.appendChild(p);
+      }
+    });
 
     document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false) || result.uploadDate}`;
     document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true) || result.deadlineRaw}`;
@@ -360,13 +362,12 @@ descriptionLines.forEach(line => {
   }
 }
 
-loadVideoData();
-
-</script>
+loadVideoData();</script>
 
 
 </body>
 </html>
+
 
 
 
