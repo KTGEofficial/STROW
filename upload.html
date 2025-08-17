@@ -138,7 +138,7 @@ async function handleSubmit(event) {
   data.isPrivate = document.getElementById("isPrivate").checked;
   data.hasDeadline = document.getElementById("hasDeadline").checked;
   data.videoID = videoID;
-  data.username = username;
+  data.username = username;data.fingerprint = await generateHexFingerprint(getRawFingerprintData());
   data.mode = "uploading";
 
   const query = new URLSearchParams(data).toString();
@@ -147,6 +147,7 @@ async function handleSubmit(event) {
 </script>
 
  </body></html>
+
 
 
 
