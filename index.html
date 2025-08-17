@@ -117,7 +117,7 @@
       const hexFingerprint = await generateHexFingerprint(rawData);
 
       // ? Updated macro URL
-      const macroURL = "https://script.google.com/macros/s/AKfycbyGqGlKNZ2fc-b_tFMjPioQI80sZbp3LW3iTucVKolflqzkLaBNuTtkHEEWf5NeMiFP/exec";
+      const macroURL = "https://script.google.com/macros/s/AKfycbwKZHSR_yDwDQr0fTePXxNGOGvRYMxQPemWUVGiQXZxWCSAEISmEVDjI2nErXvcc2o5/exec";
       const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
       const result = await response.json();
 
@@ -140,6 +140,7 @@
 
 
 </body></html>
+
 
 
 
