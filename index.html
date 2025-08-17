@@ -86,66 +86,10 @@
   </style>
 </head>
 <body>
-  <div id="strow-container"></div>
+  <div id="strow-container"><h1>STROW has been shut down</h1>
+            <p>We had to shut down STROW because of coding complications. We are trying to get STROW back up so please wait.</p></div>
 <div class="grid-overlay"></div>
-  <script>
-    async function getRawFingerprintData() {
-      const traits = [
-        navigator.userAgent,
-        navigator.language,
-        screen.width,
-        screen.height,
-        screen.colorDepth,
-        new Date().getTimezoneOffset(),
-        navigator.platform,
-        navigator.hardwareConcurrency,
-        navigator.deviceMemory || 'unknown',
-      ];
-      return traits.join('::');
-    }
-
-    async function generateHexFingerprint(rawData) {
-      const encoder = new TextEncoder();
-      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
-      return Array.from(new Uint8Array(buffer))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-    }
-
-    async function validateFingerprint() {
-      const rawData = await getRawFingerprintData();
-      const hexFingerprint = await generateHexFingerprint(rawData);
-
-      // ? Updated macro URL
-      const macroURL = "https://script.google.com/macros/s/AKfycbwKZHSR_yDwDQr0fTePXxNGOGvRYMxQPemWUVGiQXZxWCSAEISmEVDjI2nErXvcc2o5/exec";
-      const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
-      const result = await response.json();
-
-      if (result.row !== null && result.username) {
-        document.getElementById("strow-container").innerHTML = `
-          <div class="content">
-            <h1>STROW Website</h1>
-            <p>You are logged in as ${result.username}</p>
-            <a href="https://ktgeofficial.github.io/STROW/upload.html" class="button-link">Upload a video</a><br><br>
-            <a href="https://ktgeofficial.github.io/STROW/accountchange.html" class="button-link">Account Change</a>
-          </div>
-        `;
-      } else {
-        window.location.href = "https://ktgeofficial.github.io/STROW/accountchange.html";
-      }
-    }
-
-    validateFingerprint();
-  </script>
+  
 
 
 </body></html>
-
-
-
-
-
-
-
-
-
