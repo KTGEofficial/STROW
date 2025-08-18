@@ -202,7 +202,7 @@ function updateCountdown(deadlineRaw, hasDeadline) {
   }
 
   const deadline = deadlineRaw;
-  
+  console.log(deadline);
   // Check if the date is invalid (NaN)
   if (isNaN(deadline)) {
     countdownElement.textContent = "Invalid deadline format";
@@ -379,6 +379,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
