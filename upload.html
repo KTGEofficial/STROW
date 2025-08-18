@@ -149,7 +149,7 @@ async function handleSubmit(event) {
   }
 
   const query = new URLSearchParams(data).toString();
-  const response = await fetch(`https://script.google.com/macros/s/AKfycbwKZHSR_yDwDQr0fTePXxNGOGvRYMxQPemWUVGiQXZxWCSAEISmEVDjI2nErXvcc2o5/exec?${query}`);
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbwVq1_Ex6uNvYnY16xiOYjaLObj4rmNWaeJQV38x4gtMEnCWmIMXFRo03cANtnSlho4/exec?${query}`);
 const result = await response.json();
 
 if (result.redirect) {
@@ -160,6 +160,7 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
 
