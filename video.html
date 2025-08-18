@@ -347,8 +347,8 @@ async function loadVideoData() {
       }
     });
 
-    document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false, timezoneAbbreviation) || result.uploadDate}`;
-    document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true, timezoneAbbreviation) || result.deadlineRaw}`;
+    document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false, result.timezoneAbbreviation) || result.uploadDate}`;
+    document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true, result.timezoneAbbreviation) || result.deadlineRaw}`;
     document.getElementById("spreadsheetLink").href = result.spreadsheetHref || "#";
     document.getElementById("externalLink").href = result.externalHref || "#";
     document.getElementById("commentCount").textContent = `${result.comments || 0} Comments`;
@@ -379,4 +379,5 @@ loadVideoData();
 
 </body>
 </html>
+
 
