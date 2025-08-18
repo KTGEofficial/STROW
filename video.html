@@ -201,16 +201,15 @@ function updateCountdown(deadlineRaw, hasDeadline) {
     return;
   }
 
-  const deadline = deadlineRaw;
-  console.log(deadline);
+  console.log(deadlineRaw);
   // Check if the date is invalid (NaN)
-  if (isNaN(deadline)) {
+  if (isNaN(deadlineRaw)) {
     countdownElement.textContent = "Invalid deadline format";
     return;
   }
   
   const now = Date.now();
-  const distance = deadline - now;
+  const distance = deadlineRaw - now;
 
   if (distance <= 0) {
     countdownElement.textContent = "The deadline has passed";
@@ -379,6 +378,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
