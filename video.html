@@ -203,11 +203,8 @@ function updateCountdown(deadlineRaw, hasDeadline) {
 
   console.log(deadlineRaw);
   // Check if the date is invalid (NaN)
-  if (isNaN(deadlineRaw)) {
-    countdownElement.textContent = "Invalid deadline format";
-    return;
-  }
-  
+  try {
+    
   const now = Date.now();
   const distance = deadlineRaw - now;
 
@@ -236,7 +233,9 @@ function updateCountdown(deadlineRaw, hasDeadline) {
   }
 
   countdownElement.textContent = partsToDisplay.join("");
-}
+} catch (err) {countdownElement.textContent = `Error showing countdown: ${err}`;}
+  }
+  
 
 // Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false, timezoneAbbreviation) {
@@ -378,6 +377,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
