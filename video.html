@@ -192,6 +192,22 @@ async function generateHexFingerprint(rawData) {
     .join('');
 }
 
+/**
+ * Creates a valid Date object from a potentially malformed date string.
+ * It assumes the string is in UTC and handles common formats.
+ * @param {string} dateString - The raw date string.
+ * @returns {Date} A new Date object.
+ */
+function createUTCDate(dateString) {
+  if (!dateString) {
+    return new Date(NaN); // Return an invalid date for error handling
+  }
+  // Replace space with 'T' and append 'Z' to create a valid UTC ISO string.
+  // This handles formats like "YYYY-MM-DD HH:mm:ss" which Date.parse() can't handle.
+  const utcString = dateString.replace(' ', 'T') + 'Z';
+  return new Date(utcString);
+}
+
 // Function to update the countdown display
 function updateCountdown(deadlineRaw, hasDeadline) {
   const countdownElement = document.getElementById("countdown");
@@ -201,22 +217,13 @@ function updateCountdown(deadlineRaw, hasDeadline) {
     return;
   }
 
-  // Use a regular expression to safely parse the date string.
-  const parts = deadlineRaw.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-  if (!parts) {
+  const deadline = createUTCDate(deadlineRaw).getTime();
+  
+  // Check if the date is invalid (NaN)
+  if (isNaN(deadline)) {
     countdownElement.textContent = "Invalid deadline format";
     return;
   }
-
-  // Create a UTC timestamp from the parsed components.
-  const deadline = Date.UTC(
-    parseInt(parts[1], 10),   // Year
-    parseInt(parts[2], 10) - 1, // Month (0-indexed)
-    parseInt(parts[3], 10),   // Day
-    parseInt(parts[4], 10),   // Hour
-    parseInt(parts[5], 10),   // Minute
-    parseInt(parts[6], 10)    // Second
-  );
   
   const now = Date.now();
   const distance = deadline - now;
@@ -250,22 +257,12 @@ function updateCountdown(deadlineRaw, hasDeadline) {
 
 // Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false) {
-  // Use a regular expression to safely parse the date string.
-  const parts = dateString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-  if (!parts) {
+  const date = createUTCDate(dateString);
+
+  if (isNaN(date.getTime())) {
     return "Invalid Date";
   }
 
-  // Create a Date object from the UTC timestamp.
-  const date = new Date(Date.UTC(
-    parseInt(parts[1], 10),   // Year
-    parseInt(parts[2], 10) - 1, // Month (0-indexed)
-    parseInt(parts[3], 10),   // Day
-    parseInt(parts[4], 10),   // Hour
-    parseInt(parts[5], 10),   // Minute
-    parseInt(parts[6], 10)    // Second
-  ));
-  
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   let formatted = date.toLocaleDateString(undefined, options);
 
@@ -396,3 +393,4 @@ loadVideoData();
 
 </body>
 </html>
+
