@@ -193,7 +193,7 @@ async function generateHexFingerprint(rawData) {
 }
 
 // Function to update the countdown display
-function updateCountdown(deadlineUTC, hasDeadline) {
+function updateCountdown(deadlineRaw, hasDeadline) {
   const countdownElement = document.getElementById("countdown");
 
   if (!hasDeadline) {
@@ -201,8 +201,23 @@ function updateCountdown(deadlineUTC, hasDeadline) {
     return;
   }
 
-  // Explicitly create a UTC Date object to prevent misinterpretation
-  const deadline = new Date(deadlineUTC + 'Z').getTime();
+  // Use a regular expression to safely parse the date string.
+  const parts = deadlineRaw.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+  if (!parts) {
+    countdownElement.textContent = "Invalid deadline format";
+    return;
+  }
+
+  // Create a UTC timestamp from the parsed components.
+  const deadline = Date.UTC(
+    parseInt(parts[1], 10),   // Year
+    parseInt(parts[2], 10) - 1, // Month (0-indexed)
+    parseInt(parts[3], 10),   // Day
+    parseInt(parts[4], 10),   // Hour
+    parseInt(parts[5], 10),   // Minute
+    parseInt(parts[6], 10)    // Second
+  );
+  
   const now = Date.now();
   const distance = deadline - now;
 
@@ -216,27 +231,41 @@ function updateCountdown(deadlineUTC, hasDeadline) {
   const minutes = Math.floor((distance / (1000 * 60)) % 60);
   const seconds = Math.floor((distance / 1000) % 60);
 
-  let parts = [];
+  let partsToDisplay = [];
 
   if (days >= 1) {
-    parts.push(`${days}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+    partsToDisplay.push(`${days}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
   } else if (hours >= 1) {
     const hoursStr = hours >= 10 ? hours : hours.toString();
-    parts.push(`${hoursStr}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+    partsToDisplay.push(`${hoursStr}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
   } else if (minutes >= 1) {
     const minutesStr = minutes >= 10 ? minutes : minutes.toString();
-    parts.push(`${minutesStr}:${String(seconds).padStart(2, '0')}`);
+    partsToDisplay.push(`${minutesStr}:${String(seconds).padStart(2, '0')}`);
   } else {
-    parts.push(`${seconds} seconds`);
+    partsToDisplay.push(`${seconds} seconds`);
   }
 
-  countdownElement.textContent = parts.join("");
+  countdownElement.textContent = partsToDisplay.join("");
 }
 
 // Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false) {
-  // Explicitly create a UTC Date object to ensure the correct time is displayed
-  const date = new Date(dateString + 'Z');
+  // Use a regular expression to safely parse the date string.
+  const parts = dateString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+  if (!parts) {
+    return "Invalid Date";
+  }
+
+  // Create a Date object from the UTC timestamp.
+  const date = new Date(Date.UTC(
+    parseInt(parts[1], 10),   // Year
+    parseInt(parts[2], 10) - 1, // Month (0-indexed)
+    parseInt(parts[3], 10),   // Day
+    parseInt(parts[4], 10),   // Hour
+    parseInt(parts[5], 10),   // Minute
+    parseInt(parts[6], 10)    // Second
+  ));
+  
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   let formatted = date.toLocaleDateString(undefined, options);
 
@@ -367,14 +396,3 @@ loadVideoData();
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
