@@ -241,7 +241,7 @@ function updateCountdown(deadlineRaw, hasDeadline) {
 
 // Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false, timezoneAbbreviation) {
-  const date = dateString;
+  const date = new Date(dateString);
 
   if (isNaN(date.getTime())) {
     return "Invalid Date";
@@ -379,5 +379,6 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
