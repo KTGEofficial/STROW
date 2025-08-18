@@ -139,7 +139,7 @@ async function handleSubmit(event) {
   data.hasDeadline = document.getElementById("hasDeadline").checked;
   data.videoID = videoID;
   data.username = username;
-  data.fingerprint = await generateHexFingerprint(getRawFingerprintData());
+  data.fingerprint = await getRawFingerprintData();
   data.mode = "uploading";
 
   // ⏰ Convert deadline to UTC ISO string
@@ -160,6 +160,7 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
 
