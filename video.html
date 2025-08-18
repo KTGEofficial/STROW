@@ -201,9 +201,8 @@ function updateCountdown(deadlineUTC, hasDeadline) {
     return;
   }
 
-  // The Date object automatically interprets the string as UTC
-  // and converts it to the user's local time for calculations.
-  const deadline = new Date(deadlineUTC).getTime();
+  // Explicitly create a UTC Date object to prevent misinterpretation
+  const deadline = new Date(deadlineUTC + 'Z').getTime();
   const now = Date.now();
   const distance = deadline - now;
 
@@ -236,8 +235,8 @@ function updateCountdown(deadlineUTC, hasDeadline) {
 
 // Function to format the date and time for display
 function formatDeadline(dateString, includeTime = false) {
-  // Creates a Date object, which will be in the user's local time zone.
-  const date = new Date(dateString);
+  // Explicitly create a UTC Date object to ensure the correct time is displayed
+  const date = new Date(dateString + 'Z');
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   let formatted = date.toLocaleDateString(undefined, options);
 
@@ -362,11 +361,13 @@ async function loadVideoData() {
   }
 }
 
-loadVideoData();</script>
+loadVideoData();
+</script>
 
 
 </body>
 </html>
+
 
 
 
