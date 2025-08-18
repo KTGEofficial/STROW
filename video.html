@@ -201,17 +201,17 @@ async function generateHexFingerprint(rawData) {
 function createUTCDate(dateString) {
   if (!dateString) return new Date(NaN);
 
-  // If string already contains a "T" and possibly ends with "Z", it's ISO and can be parsed directly.
+  // If ISO8601 with T and Z (e.g. "2024-12-25T15:00:00Z"), just parse it
   if (/T.*Z$/.test(dateString)) {
     return new Date(dateString);
   }
 
-  // If string is in "YYYY-MM-DD HH:mm:ss" format, convert to ISO.
+  // If "YYYY-MM-DD HH:mm:ss", convert to ISO and parse as UTC
   if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(dateString)) {
-    return new Date(dateString.replace(" ", "T") + "Z");
+    return new Date(dateString.replace(' ', 'T') + 'Z');
   }
 
-  // Otherwise, let Date try its best.
+  // Otherwise, try to parse
   return new Date(dateString);
 }
 
@@ -285,9 +285,9 @@ function formatDeadline(dateString, includeTime = false) {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
-      timeZone: 'America/New_York', // ENSURE it's Delaware/Eastern Time!
-      timeZoneName: 'short'
+      timeZoneName: 'short' // Will show user's local TZ abbreviation
     };
+    // NO timeZone property; uses the browser's local zone
     const localTime = date.toLocaleTimeString(undefined, timeOptions);
     formatted += ` at ${localTime}`;
   }
@@ -394,7 +394,7 @@ async function loadVideoData() {
     document.getElementById("videoTitle").textContent = "Error loading video.";
   }
 }
-
+// This is a quality marker for if the HTML Page loaded is the correct one for debuggers
 loadVideoData();
 </script>
 
