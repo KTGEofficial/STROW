@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>STROW Search</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(
+        to bottom left,
+        hsl(180, 96%, 96%),
+        hsl(150, 96%, 96%)
+      );
+      font-family: sans-serif;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.5) 8px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.5) 8px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    input[type="search"] {
+      background-color: white;
+      border: 3px solid transparent;
+      border-radius: 1rem;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      outline: none;
+      background-image:
+        linear-gradient(to bottom left, #00FFFF, #00FF7F),
+        white;
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: 0 0 8px rgba(0,255,127,0.4);
+      transition: box-shadow 0.3s ease;
+    }
+
+    input[type="search"]:focus {
+      box-shadow: 0 0 8px rgba(0,255,255,0.5);
+    }
+
+    .button-link {
+      position: relative;
+      display: inline-block;
+      text-decoration: none;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      margin-top: 1rem;
+      border-radius: 1rem;
+      background-image: linear-gradient(to bottom left, #00FFFF, #00FF7F);
+      box-shadow: 0 4px 8px rgba(0,255,127,0.3);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 1;
+    }
+
+    .button-link:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,255,255,0.4);
+    }
+
+    .button-link:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 6px rgba(0,255,255,0.2);
+    }
+
+    .ripple-outline {
+      position: absolute;
+      border: 2px solid rgba(0,255,255,0.4);
+      border-radius: 1rem;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform: scale(1);
+      animation: ripple-outline-animation 800ms ease-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes ripple-outline-animation {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div id="strow-container"></div>
+
+  <script>
+    async function getRawFingerprintData() {
+      const traits = [
+        navigator.userAgent,
+        navigator.language,
+        screen.width,
+        screen.height,
+        screen.colorDepth,
+        new Date().getTimezoneOffset(),
+        navigator.platform,
+        navigator.hardwareConcurrency,
+        navigator.deviceMemory || 'unknown'
+      ];
+      return traits.join('::');
+    }
+
+    async function generateHexFingerprint(rawData) {
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
+      return Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    async function validateFingerprint() {
+      const rawData = await getRawFingerprintData();
+      const hexFingerprint = await generateHexFingerprint(rawData);
+
+      const macroURL = 
+        'https://script.google.com/macros/s/AKfycbzS1NYBdDzwoJ_geOv3TNJBsxoJ8gPzhRM7Xc7MfH5HPv4XiGstEJDrWPaJSMrS0nPh/exec';
+      const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
+      const result = await response.json();
+
+      if (result.row !== null && result.username) {
+        mountSearchUI(result.username);
+      } else {
+        window.location.href =
+          'https://ktgeofficial.github.io/STROW/accountchange.html';
+      }
+    }
+
+    function mountSearchUI(username) {
+      const container = document.getElementById('strow-container');
+      container.innerHTML = `
+        <div class="content">
+          <h1>STROW Search</h1>
+          <p>You are logged in as ${username}</p>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Enter your query…"
+          /><br/>
+          <a href="#"
+             id="searchButton"
+             class="button-link">
+            Search
+          </a>
+        </div>
+      `;
+
+      const inputEl = document.getElementById('searchInput');
+      const btnEl   = document.getElementById('searchButton');
+
+      btnEl.addEventListener('click', e => {
+        e.preventDefault();
+        const query = inputEl.value.trim();
+        if (!query) return; // no empty searches
+        // ripple effect
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple-outline';
+        btnEl.appendChild(ripple);
+        setTimeout(() => btnEl.removeChild(ripple), 800);
+
+        // navigate after small delay so ripple shows
+        setTimeout(() => {
+          window.location.href = 
+            `https://ktgeofficial.github.io/STROW/search.html?id=${encodeURIComponent(query)}`;
+        }, 100);
+      });
+    }
+
+    validateFingerprint();
+  </script>
+</body>
+</html>
