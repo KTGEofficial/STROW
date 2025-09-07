@@ -5,7 +5,8 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
         font-family: sans-serif;
       }
@@ -23,6 +24,13 @@
         pointer-events: none;
         z-index: 0;
       }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem;
+        text-align: center;
+      }
     `;
 
     const darkCSS = `
@@ -30,7 +38,8 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         background: linear-gradient(to bottom left, hsl(240, 96%, 16%), hsl(0, 0%, 0%), hsl(332, 96%, 32%));
         font-family: sans-serif;
         color: white;
@@ -48,6 +57,13 @@
         background-size: 40px 40px;
         pointer-events: none;
         z-index: 0;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem;
+        text-align: center;
       }
     `;
 
@@ -202,6 +218,7 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
 
