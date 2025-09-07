@@ -1,4 +1,81 @@
-<html lang="en"><head>
+<html lang="en"><head><style id="dynamic-theme"></style>
+  <script>
+    const lightCSS = `
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
+        font-family: sans-serif;
+      }
+
+      .grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(to right, rgba(255, 255, 255, 0.5) 8px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 8px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem;
+        text-align: center;
+      }
+    `;
+
+    const darkCSS = `
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(to bottom left, hsl(240, 96%, 16%), hsl(0, 0%, 0%), hsl(332, 96%, 32%));
+        font-family: sans-serif;
+        color: white;
+      }
+
+      .grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(to right, rgba(255, 255, 255, 0.125) 8px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.125) 8px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem;
+        text-align: center;
+      }
+    `;
+
+    function applyTheme() {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const styleTag = document.getElementById('dynamic-theme');
+      styleTag.textContent = prefersDark ? darkCSS : lightCSS;
+    }
+
+    applyTheme();
+
+    // Optional: Listen for changes in system theme
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+  </script>
   <meta charset="UTF-8">
   <title>STROW Account Change</title>
   <style>html {
@@ -259,6 +336,7 @@ button:active {
 
 
 </body></html>
+
 
 
 
