@@ -340,7 +340,7 @@ async function loadVideoData() {
   }).toString();
 
   try {
-    const response = await fetch(``https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
     const result = await response.json();
 
     if (!result.success) {
@@ -435,3 +435,4 @@ loadVideoData();
 
 </body>
 </html>
+
