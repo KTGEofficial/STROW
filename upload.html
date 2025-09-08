@@ -145,9 +145,7 @@ async function prepareUploadSession() {
 
 prepareUploadSession(); // Run on page load
 
-const macroURL = "https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec";
-const query = new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
-const response = await fetch(`${macroURL}?${query}`);
+fetch(`${"https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec"}?${new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString()}`);
 
 function updateVideoPreview() {
   const url = videoLinkInput.value.trim();
@@ -224,3 +222,4 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
