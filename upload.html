@@ -154,7 +154,7 @@ prepareUploadSession(); // Run on page load
     colorscheme: findColorScheme()
   }).toString();
 
-  const response = await fetch(`${macroURL}?${query}`);
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
   const result = await response.json();
   console.log("CSSC result:", result);
 })();
@@ -235,6 +235,7 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
 
