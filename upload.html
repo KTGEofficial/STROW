@@ -145,7 +145,20 @@ console.log(`${rawData} ${hexFingerprint}`);
 
 prepareUploadSession(); // Run on page load
 
-fetch(`${"https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec"}?${new URLSearchParams({ mode: "cssc", fingerprint: generateHexFingerprint(getRawFingerprintData()), colorscheme: findColorScheme() }).toString()}`);
+(async () => {
+  const rawData = await getRawFingerprintData();
+  const hexFingerprint = await generateHexFingerprint(rawData);
+  const query = new URLSearchParams({
+    mode: "cssc",
+    fingerprint: hexFingerprint,
+    colorscheme: findColorScheme()
+  }).toString();
+
+  const response = await fetch(`${macroURL}?${query}`);
+  const result = await response.json();
+  console.log("CSSC result:", result);
+})();
+
 console.log(`${getRawFingerprintData()} ${generateHexFingerprint(getRawFingerprintData())}`);
 function updateVideoPreview() {
   const url = videoLinkInput.value.trim();
@@ -222,6 +235,7 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
 
