@@ -217,7 +217,7 @@
   <h2 id="commentCount">0 Comments</h2>
 </form></div>
 <script>
-// Function to get raw fingerprint data from various browser traits
+function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: dark)").matches;return document.getElementById("dynamic-theme").textContent=e?lightCSS:darkCSS,e}// Function to get raw fingerprint data from various browser traits
 async function getRawFingerprintData() {
   const traits = [
     navigator.userAgent,
@@ -340,7 +340,7 @@ async function loadVideoData() {
   }).toString();
 
   try {
-    const response = await fetch(`https://script.google.com/macros/s/AKfycbzS1NYBdDzwoJ_geOv3TNJBsxoJ8gPzhRM7Xc7MfH5HPv4XiGstEJDrWPaJSMrS0nPh/exec?${query}`);
+    const response = await fetch(``https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
     const result = await response.json();
 
     if (!result.success) {
@@ -415,19 +415,23 @@ async function loadVideoData() {
   }
 }
 // This is a quality marker for if the HTML Page loaded is the correct one for debuggers
+
+// Ok! Good to know, thanks!
+(async () => {
+  const rawData = await getRawFingerprintData();
+  const hexFingerprint = await generateHexFingerprint(rawData);
+  const query = new URLSearchParams({
+    mode: "cssc",
+    fingerprint: hexFingerprint,
+    colorscheme: findColorScheme()
+  }).toString();
+
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+  const result = await response.json();
+  console.log("CSSC result:", result);
+})();
 loadVideoData();
 </script>
 
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
