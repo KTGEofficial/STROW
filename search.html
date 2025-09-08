@@ -192,7 +192,7 @@ function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: da
       const rawData = await getRawFingerprintData();
       const hexFingerprint = await generateHexFingerprint(rawData);
 
-      const macroURL = "https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec";
+      const macroURL = "https://script.google.com/macros/s/AKfycbzt8rTZGVPRA4yLsMN8RgGGotQ8rxcrtADoO2gsBa2KMQEW9uqRPVuYeI1MaQlS2hzA/exec";
       const query = new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
       const response = await fetch(`${macroURL}?${query}`);
       const result = await response.json();
@@ -204,6 +204,16 @@ function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: da
           'https://ktgeofficial.github.io/STROW/accountchange.html';
       }
     }
+(async () => {
+  try {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbzt8rTZGVPRA4yLsMN8RgGGotQ8rxcrtADoO2gsBa2KMQEW9uqRPVuYeI1MaQlS2hzA/exec?mode=search");
+    const result = await response.json();
+    console.log(result);
+    // You can now ritualize the result into UI, glyphs, or emotional metadata
+  } catch (error) {
+    console.error("Failed to fetch video data:", error);
+  }
+})();
 
     function mountSearchUI(username) {
       const container = document.getElementById('strow-container');
