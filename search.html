@@ -187,7 +187,7 @@
         .map(b => b.toString(16).padStart(2, '0'))
         .join('');
     }
-
+function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: dark)").matches;return document.getElementById("dynamic-theme").textContent=e?lightCSS:darkCSS,e}
     async function validateFingerprint() {
       const rawData = await getRawFingerprintData();
       const hexFingerprint = await generateHexFingerprint(rawData);
