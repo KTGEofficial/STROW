@@ -157,6 +157,7 @@ button:active {
   <br><br><div class="status" id="status"></div>
 
   <script>
+    function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: dark)").matches;return document.getElementById("dynamic-theme").textContent=e?lightCSS:darkCSS,e}
     async function getFingerprints() {
       const traits = [
         navigator.userAgent,
@@ -176,11 +177,22 @@ button:active {
       const base64 = btoa(rawData);
       return { hex, base64 };
     }
+(async () => {
+  const { hex, base64 } = await getFingerprints();
+  const query = new URLSearchParams({
+    mode: "cssc",
+    fingerprint: hex,
+    colorscheme: findColorScheme()
+  }).toString();
 
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+  const result = await response.json();
+  console.log("CSSC result:", result);
+})();
     async function accountChangeFunction(data, redirectOnSuccess = true) {
       try {
         const query = new URLSearchParams(data).toString();
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbzS1NYBdDzwoJ_geOv3TNJBsxoJ8gPzhRM7Xc7MfH5HPv4XiGstEJDrWPaJSMrS0nPh/exec?${query}`);
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
         const result = await response.json();
 
         if (result.success) {
@@ -212,7 +224,8 @@ button:active {
         email,
         action: "accountChange",
         fingerprint: hex,
-        pseudofingerprint: base64
+        pseudofingerprint: base64,
+        colorscheme: findColorScheme()
       };
 
       accountChangeFunction(payload);
@@ -231,7 +244,8 @@ button:active {
         password,
         email,
         fingerprint: hex,
-        pseudofingerprint: base64
+        pseudofingerprint: base64,
+        colorscheme: findColorScheme()
       };
 
       accountChangeFunction(payload);
@@ -249,7 +263,8 @@ button:active {
         password: "", // not needed
         email,
         fingerprint: hex,
-        pseudofingerprint: base64
+        pseudofingerprint: base64,
+        colorscheme: findColorScheme()
       };
 
       accountChangeFunction(payload, false);
@@ -300,6 +315,7 @@ button:active {
 
 
 </body></html>
+
 
 
 
