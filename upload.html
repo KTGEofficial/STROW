@@ -119,7 +119,7 @@ async function generateHexFingerprint(rawData) {
 async function prepareUploadSession() {
   const rawData = await getRawFingerprintData();
   const hexFingerprint = await generateHexFingerprint(rawData);
-
+console.log(`${rawData} ${hexFingerprint}`);
   const query = new URLSearchParams({
     mode: "upload",
     fingerprint: hexFingerprint,
@@ -146,7 +146,7 @@ async function prepareUploadSession() {
 prepareUploadSession(); // Run on page load
 
 fetch(`${"https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec"}?${new URLSearchParams({ mode: "cssc", fingerprint: generateHexFingerprint(getRawFingerprintData()), colorscheme: findColorScheme() }).toString()}`);
-
+console.log(`${getRawFingerprintData()} ${generateHexFingerprint(getRawFingerprintData())}`);
 function updateVideoPreview() {
   const url = videoLinkInput.value.trim();
   let embedUrl = "";
@@ -222,5 +222,6 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
