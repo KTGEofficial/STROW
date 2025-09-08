@@ -192,9 +192,9 @@
       const rawData = await getRawFingerprintData();
       const hexFingerprint = await generateHexFingerprint(rawData);
 
-      const macroURL = 
-        'https://script.google.com/macros/s/AKfycbzS1NYBdDzwoJ_geOv3TNJBsxoJ8gPzhRM7Xc7MfH5HPv4XiGstEJDrWPaJSMrS0nPh/exec';
-      const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
+      const macroURL = "https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec";
+      const query = new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
+      const response = await fetch(`${macroURL}?${query}`);
       const result = await response.json();
 
       if (result.row !== null && result.username) {
