@@ -168,8 +168,9 @@ function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: da
       const hexFingerprint = await generateHexFingerprint(rawData);
 
       // ? Updated macro URL
-      const macroURL = "https://script.google.com/macros/s/AKfycbyhVJWU4nC4QuWIv4jXJ7tTl19xiDBwBRUD01F2ZREvfVbpidqS4X1IuNLp-hj6GbAD/exec";
-      const response = await fetch(`${macroURL}?fingerprint=${hexFingerprint}`);
+      const macroURL = "https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec";
+      const query = new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
+      const response = await fetch(`${macroURL}?${query}`);
       const result = await response.json();
 
       if (result.row !== null && result.username) {
@@ -181,8 +182,7 @@ function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: da
             <a href="https://ktgeofficial.github.io/STROW/upload.html" class="button-link">Upload a video</a><br><br>
             <a href="https://ktgeofficial.github.io/STROW/accountchange.html" class="button-link">Account Change</a>
           </div>
-        `;const query = new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
-        const csscResponse = await fetch(`${macroURL}?${query}`);
+        `;
       } else {
         window.location.href = "https://ktgeofficial.github.io/STROW/accountchange.html";
       }
@@ -191,10 +191,3 @@ function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: da
     validateFingerprint();
   </script>
 </body></html>
-
-
-
-
-
-
-
