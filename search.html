@@ -345,7 +345,7 @@ const rawData = await getRawFingerprintData();
       const nowUTC = new Date().getTime()
       const query = new URLSearchParams({
         mode: "search",
-        fingerprint: await generateHexFingerprint(getRawFingerprintData()),
+        fingerprint: hexFingerprint,
         colorscheme: findColorScheme(),
         ishomepage: false,
         searchquery: new URLSearchParams(window.location.search).get("id"),
