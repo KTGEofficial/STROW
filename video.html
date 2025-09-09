@@ -2,72 +2,9 @@
 <head>
     <style id="dynamic-theme"></style>
   <script>
-    const lightCSS = `
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        background: linear-gradient(to bottom left, hsl(180, 96%, 96%), hsl(150, 96%, 96%));
-        font-family: sans-serif;
-      }
+    const lightCSS = `body,html{margin:0;padding:0;height:100%;overflow-x:hidden;overflow-y:auto;background:linear-gradient(to bottom left,#ebffff,#ebfff5);font-family:sans-serif}.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(90deg,hsla(0,0%,100%,.5) 8px,transparent 0),linear-gradient(180deg,hsla(0,0%,100%,.5) 8px,transparent 0);background-size:40px 40px;pointer-events:none;z-index:0}.content{position:relative;z-index:1;padding:2rem;text-align:center}`;
 
-      .grid-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-          linear-gradient(to right, rgba(255, 255, 255, 0.5) 8px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 8px, transparent 1px);
-        background-size: 40px 40px;
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .content {
-        position: relative;
-        z-index: 1;
-        padding: 2rem;
-        text-align: center;
-      }
-    `;
-
-    const darkCSS = `
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        background: linear-gradient(to bottom left, hsl(240, 96%, 16%), hsl(0, 0%, 0%), hsl(332, 96%, 32%));
-        font-family: sans-serif;
-        color: white;
-      }
-
-      .grid-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-          linear-gradient(to right, rgba(255, 255, 255, 0.125) 8px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.125) 8px, transparent 1px);
-        background-size: 40px 40px;
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .content {
-        position: relative;
-        z-index: 1;
-        padding: 2rem;
-        text-align: center;
-      }
-    `;
+    const darkCSS = `body,html{margin:0;padding:0;height:100%;overflow-x:hidden;overflow-y:auto;background:linear-gradient(to bottom left,#020250,#000,#a0034c);font-family:sans-serif;color:#fff}.grid-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(90deg,hsla(0,0%,100%,.125) 8px,transparent 0),linear-gradient(180deg,hsla(0,0%,100%,.125) 8px,transparent 0);background-size:40px 40px;pointer-events:none;z-index:0}.content{position:relative;z-index:1;padding:2rem;text-align:center}`;
 
     function applyTheme() {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -186,13 +123,26 @@
                 transform: scale(2.5);
                 opacity: 0;
             }
-        }
+        }.comment-section {
+  background: none;
+  padding: 1.5em;
+  margin-top: 2em;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.comment {
+  padding: 1em;
+  margin-bottom: 1em;
+  border-radius: 6px;
+}
     </style>
 </head>
 <body>
     <div class="grid-overlay"></div>
 
-<div style="position: relative; height: 100vh; background-color: hsl(0deg 0% 100% / 0%); padding: 2rem;"><form>
+<div style="position: relative; height: 100vh; background-color: hsl(0deg 0% 100% / 0%); padding: 2rem;">
   <iframe
     id="videoPreview"
     src=""
@@ -200,22 +150,17 @@
     allowfullscreen
     style="width: 840px; height: 472.5px;">
   </iframe>
-
   <h1 id="videoTitle">Loading Title</h1>
-
   <h2 id="countdown">Waiting for deadline</h2>
-
   <p id="videoDescription">Loading description</p>
-
   <h4 id="videoAuthor">From undefined at undefined</h4>
-
   <p id="videoDeadline">Deadline: Loading</p>
-
   <a id="spreadsheetLink" class="button-link">Spreadsheet</a>
   <a id="externalLink" class="button-link">Alternate External</a>
-
   <h2 id="commentCount">0 Comments</h2>
-</form></div>
+<input type="text" id="comment"><br><button class="button-link" id="comment-button" onclick="submitComment()">Comment</button><br><div class="comment-section" id="comment-section">
+</div>
+</div>
 <script>
 function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: dark)").matches;return document.getElementById("dynamic-theme").textContent=e?lightCSS:darkCSS,e}// Function to get raw fingerprint data from various browser traits
 async function getRawFingerprintData() {
@@ -341,7 +286,7 @@ async function loadVideoData() {
   }).toString();
 
   try {
-    const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbzmQWZ9x-nq1oTXel_DHgb9drTUx9uudAhKqonBOj58rHpUrsElRiRDPNN4ZIhGynOF/exec?${query}`);
     const result = await response.json();
 
     if (!result.success) {
@@ -398,7 +343,8 @@ async function loadVideoData() {
       `Deadline: ${formatDeadline(result.deadlineRaw, true, result.timezoneAbbreviation) || result.deadlineRaw}`;
     document.getElementById("spreadsheetLink").href = result.spreadsheetHref || "#";
     document.getElementById("externalLink").href = result.externalHref || "#";
-    document.getElementById("commentCount").textContent = `${result.comments || 0} Comments`;
+if (result.commentcount === 1) { document.getElementById("commentCount").textContent = "1 Comment"; } else {
+    document.getElementById("commentCount").textContent = `${result.commentcount || 0} Comments`; }
 
     // PATCHED DYNAMIC COUNTDOWN LOGIC
     updateCountdown(deadlineTimestamp, !!deadlineTimestamp);
@@ -427,14 +373,58 @@ async function loadVideoData() {
     colorscheme: findColorScheme()
   }).toString();
 
-  const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbzmQWZ9x-nq1oTXel_DHgb9drTUx9uudAhKqonBOj58rHpUrsElRiRDPNN4ZIhGynOF/exec?${query}`);
   const result = await response.json();
   console.log("CSSC result:", result);
 })();
+
+async function submitComment() {
+  const button = document.getElementById("comment-button");
+  button.disabled = true;
+
+  try {
+    const commentText = document.getElementById("comment").value.trim();
+    if (!commentText) {
+      alert("Please enter a comment before submitting.");
+      button.disabled = false;
+      return;
+    }
+
+    const rawData = await getRawFingerprintData();
+    const hexFingerprint = await generateHexFingerprint(rawData);
+    const timestamp = new Date().toISOString();
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoID = urlParams.get("id") || "";
+    const colorscheme = getColorScheme();
+    const replyof = "";
+const mode = "commenting";
+
+    const query = new URLSearchParams({
+      comment: commentText,
+      timestamp: timestamp,
+      fingerprint: hexFingerprint,
+      id: videoID,
+      colorscheme: colorscheme,
+      replyof: replyof,
+mode: mode
+    }).toString();
+
+    const response = await fetch("https://script.google.com/macros/s/AKfycbzmQWZ9x-nq1oTXel_DHgb9drTUx9uudAhKqonBOj58rHpUrsElRiRDPNN4ZIhGynOF/exec?" + query);
+    const result = await response.json();
+
+    alert("Your comment has been submitted.");
+    // Optionally clear the input or show feedback
+    document.getElementById("comment").value = "";
+  } catch (error) {
+    console.error("Failed to submit comment:", error);
+    alert("Something went wrong while submitting your comment.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
 loadVideoData();
 </script>
 
 </body>
 </html>
-
-
