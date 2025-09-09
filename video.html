@@ -348,7 +348,7 @@ if (result.commentCount === 1) { document.getElementById("commentCount").textCon
   const container = document.getElementById("comment-section");
   container.innerHTML = ""; // Clear previous comments
 
-  const commentIDs = Object.keys(result);
+  const commentIDs = Object.keys(result.comments);
 
   for (let i = commentIDs.length - 1; i >= 0; i--) {
     const id = commentIDs[i];
@@ -454,6 +454,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
