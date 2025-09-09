@@ -158,6 +158,17 @@
         opacity: 0;
       }
     }
+.result-card {
+  background: none;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+
+    .result-card:hover {
+  transform: scale(1.02);
+}
 
   </style>
 </head>
@@ -317,7 +328,7 @@ const rawData = await getRawFingerprintData();
         colorscheme: findColorScheme(),
         ishomepage: false,
         searchquery: new URLSearchParams(window.location.search).get("id"),
-        timestamp: nowUTC
+        timestamp: nowUTC.toISOString()
       }).toString();
 
       const response = await fetch(
