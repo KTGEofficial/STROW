@@ -139,7 +139,7 @@ button:hover {
 button:active {
   transform: scale(0.98);
   box-shadow: 0 2px 6px rgba(0, 255, 127, 0.2);
-}
+}.custom-checkbox{display:inline-flex;align-items:center;gap:.5rem;font-size:1rem;cursor:pointer;user-select:none}.custom-checkbox input[type=checkbox]{display:none}.custom-checkbox .checkmark{width:20px;height:20px;border-radius:6px;background-image:linear-gradient(to bottom left,#0ff,#00ff7f);box-shadow:0 2px 6px rgba(0,255,127,.3);position:relative;transition:box-shadow .2s ease}.custom-checkbox:hover .checkmark{box-shadow:0 4px 10px rgba(0,255,127,.4)}.custom-checkbox input[type=checkbox]:checked+.checkmark:after{content:"";position:absolute;left:6px;top:2px;width:6px;height:12px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.custom-checkbox input[type=checkbox]:checked+.checkmark{box-shadow:0 0 8px rgba(0,255,255,.5)}button#uploadButton{color:#fff;font-size:1rem;font-weight:700;padding:.75rem 1.5rem;border:none;border-radius:1rem;cursor:pointer;background-image:linear-gradient(to bottom left,#0ff,#00ff7f);transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 4px 8px rgba(0,255,127,.3)}button#uploadButton:hover{transform:scale(1.05);box-shadow:0 6px 12px rgba(0,255,127,.4)}button#uploadButton:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,255,127,.2)}
 </style>
 </head>
 <body><div class="grid-overlay"></div>
@@ -151,7 +151,7 @@ button:active {
   <p>Password:</p><input type="password" id="password">
   <p id="confirmlabel">Confirm Password:</p><input type="password" id="confirm">
   <p>Optional Recovery Email:</p><input type="email" id="email">
-  <br><br><button class="button" onclick="submitLogin()" id="accountchange">Log In</button><br><br><button class="button" onclick="submitRecovery()" id="recoverybutton">Reset Password</button>
+  <br><br><label class="custom-checkbox">I agree to put a cookie on my device strictly to stay logged in: <input type="checkbox" id="cookiePermission" name="cookiePermission"> <span class="checkmark"></span></label><button class="button" onclick="submitLogin()" id="accountchange">Log In</button><br><br><button class="button" onclick="submitRecovery()" id="recoverybutton">Reset Password</button>
   
   
   <br><br><div class="status" id="status"></div>
@@ -185,18 +185,22 @@ button:active {
     colorscheme: findColorScheme()
   }).toString();
 
-  const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+  const response = await fetch(`https://script.google.com/macros/s/AKfycby-tbywOAlG6XyqP0hOOL7LCRnlPIVbMXBIrSL-yFOKiwoRkta5jOTozoNWkMtnNExs/exec?${query}`);
   const result = await response.json();
   console.log("CSSC result:", result);
 })();
     async function accountChangeFunction(data, redirectOnSuccess = true) {
       try {
         const query = new URLSearchParams(data).toString();
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbyjBQckv9NXHZLRVHoFsdUG5p6kVPbRHhMHnLtHZK9jYkMB7zUcLmtj1iDv_yF6CVeA/exec?${query}`);
+        const response = await fetch(`https://script.google.com/macros/s/AKfycby-tbywOAlG6XyqP0hOOL7LCRnlPIVbMXBIrSL-yFOKiwoRkta5jOTozoNWkMtnNExs/exec?${query}`);
         const result = await response.json();
 
         if (result.success) {
           if (redirectOnSuccess) {
+            if (result.cookie !== "") { const cookieCreationDate = new Date(); // actual Date object
+const expirationDate = new Date(cookieCreationDate.getTime() + (90 * 24 * 60 * 60 * 1000));
+document.cookie = `verification=${result.cookie}; expires=${expirationDate.toUTCString()}; path=/; secure; samesite=strict`;
+const response = await fetch(`https://script.google.com/macros/s/AKfycby-tbywOAlG6XyqP0hOOL7LCRnlPIVbMXBIrSL-yFOKiwoRkta5jOTozoNWkMtnNExs/exec?${new URLSearchParams({ mode: "cookie", creationTimestamp: cookieCreationDate.toISOString(), expirationTimestamp: expirationDate.toISOString(), colorscheme: findColorScheme(), cookie: result.cookie }).toString()}`); }
             window.location.href = "https://ktgeofficial.github.io/STROW/";
           } else {
             document.getElementById('status').textContent = "Recovery email sent if matched.";
@@ -214,6 +218,7 @@ button:active {
       const password = document.getElementById('password').value;
       const confirm = document.getElementById('confirm').value;
       const email = document.getElementById('email').value.trim();
+      const isCookie = document.getElementById('cookiePermission').checked;
       const { hex, base64 } = await getFingerprints();
 
       const payload = {
@@ -225,7 +230,8 @@ button:active {
         action: "accountChange",
         fingerprint: hex,
         pseudofingerprint: base64,
-        colorscheme: findColorScheme()
+        colorscheme: findColorScheme(),
+        isCookie
       };
 
       accountChangeFunction(payload);
@@ -235,6 +241,7 @@ button:active {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       const email = document.getElementById('email').value.trim();
+      const isCookie = document.getElementById('cookiePermission').checked;
       const { hex, base64 } = await getFingerprints();
 
       const payload = {
@@ -245,7 +252,8 @@ button:active {
         email,
         fingerprint: hex,
         pseudofingerprint: base64,
-        colorscheme: findColorScheme()
+        colorscheme: findColorScheme(),
+        isCookie
       };
 
       accountChangeFunction(payload);
@@ -315,6 +323,7 @@ button:active {
 
 
 </body></html>
+
 
 
 
