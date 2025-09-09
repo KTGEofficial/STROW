@@ -318,7 +318,7 @@ if (!urlParams.has("id")) {
     try {
       const query = new URLSearchParams({
         mode: "search",
-        fingerprint: hexFingerprint,
+        fingerprint: generateHexFingerprint(getRawFingerprintData()),
         colorscheme: findColorScheme(),
         ishomepage: false,
         searchquery: ""
@@ -341,7 +341,7 @@ else {
       const nowUTC = new Date().getTime()
       const query = new URLSearchParams({
         mode: "search",
-        fingerprint: hexFingerprint,
+        fingerprint: generateHexFingerprint(getRawFingerprintData()),
         colorscheme: findColorScheme(),
         ishomepage: false,
         searchquery: new URLSearchParams(window.location.search).get("id"),
