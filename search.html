@@ -316,9 +316,11 @@ const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has("id")) {
   (async () => {
     try {
+const rawData = await getRawFingerprintData();
+      const hexFingerprint = await generateHexFingerprint(rawData);
       const query = new URLSearchParams({
         mode: "search",
-        fingerprint: await generateHexFingerprint(getRawFingerprintData()),
+        fingerprint: hexFingerprint,
         colorscheme: findColorScheme(),
         ishomepage: false,
         searchquery: ""
@@ -338,6 +340,8 @@ if (!urlParams.has("id")) {
 else {
   (async () => {
     try {
+const rawData = await getRawFingerprintData();
+      const hexFingerprint = await generateHexFingerprint(rawData);
       const nowUTC = new Date().getTime()
       const query = new URLSearchParams({
         mode: "search",
