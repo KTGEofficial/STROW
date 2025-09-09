@@ -79,7 +79,16 @@
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
   </script><style>input[type=text],input[type=url]{transition:all .3s ease;background-color:#fff;border:3px solid transparent;border-radius:1rem;padding:.6rem 1rem;font-size:1rem;width:100%;max-width:100%;box-sizing:border-box;outline:none;background-image:linear-gradient(to bottom left,#0ff,#00ff7f),#fff;background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 0 8px rgba(0,255,127,.4);transition:box-shadow .3s ease}input[type=text]:focus,input[type=url]:focus{box-shadow:0 0 8px rgba(0,255,255,.5)}input[type=datetime-local]{background-color:#fff;border:3px solid transparent;border-radius:1rem;padding:.6rem 1rem;font-size:1rem;width:100%;max-width:100%;box-sizing:border-box;outline:none;font-family:sans-serif;background-image:linear-gradient(to bottom left,#0ff,#00ff7f),#fff;background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 0 8px rgba(0,255,127,.4);transition:box-shadow .3s ease}input[type=datetime-local]:focus{box-shadow:0 0 8px rgba(0,255,255,.5)}select,textarea{background-color:#fff;border:3px solid transparent;border-radius:1rem;padding:.6rem 1rem;font-size:1rem;width:100%;max-width:100%;box-sizing:border-box;outline:none;font-family:sans-serif;resize:vertical;background-image:linear-gradient(to bottom left,#0ff,#00ff7f),#fff;background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 0 8px rgba(0,255,127,.4);transition:box-shadow .3s ease}select:focus,textarea:focus{box-shadow:0 0 8px rgba(0,255,255,.5)}input[type=submit]{color:#fff;font-size:1rem;font-weight:700;padding:.75rem 1.5rem;border:none;border-radius:1rem;cursor:pointer;background-image:linear-gradient(to bottom left,#0ff,#00ff7f);transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 4px 8px rgba(0,255,127,.3)}input[type=submit]:hover{transform:scale(1.05);box-shadow:0 6px 12px rgba(0,255,127,.4)}input[type=submit]:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,255,127,.2)}.custom-checkbox{display:inline-flex;align-items:center;gap:.5rem;font-size:1rem;cursor:pointer;user-select:none}.custom-checkbox input[type=checkbox]{display:none}.custom-checkbox .checkmark{width:20px;height:20px;border-radius:6px;background-image:linear-gradient(to bottom left,#0ff,#00ff7f);box-shadow:0 2px 6px rgba(0,255,127,.3);position:relative;transition:box-shadow .2s ease}.custom-checkbox:hover .checkmark{box-shadow:0 4px 10px rgba(0,255,127,.4)}.custom-checkbox input[type=checkbox]:checked+.checkmark:after{content:"";position:absolute;left:6px;top:2px;width:6px;height:12px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}.custom-checkbox input[type=checkbox]:checked+.checkmark{box-shadow:0 0 8px rgba(0,255,255,.5)}button#uploadButton{color:#fff;font-size:1rem;font-weight:700;padding:.75rem 1.5rem;border:none;border-radius:1rem;cursor:pointer;background-image:linear-gradient(to bottom left,#0ff,#00ff7f);transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 4px 8px rgba(0,255,127,.3)}button#uploadButton:hover{transform:scale(1.05);box-shadow:0 6px 12px rgba(0,255,127,.4)}button#uploadButton:active{transform:scale(.98);box-shadow:0 2px 6px rgba(0,255,127,.2)}
 </style></head><body> <div class="grid-overlay"></div><div style="position: relative;height: 100vh;background-color: hsl(0deg 0% 100% / 0%);padding: 2rem;"> <h1>Upload Video to STROW</h1> <form id="strowForm" onsubmit="handleSubmit(event)"> <label for="videoLink">Video Link (YouTube / Google Drive):</label><br> <input type="url" id="videoLink" name="videoLink" required=""><br><br> <label for="videoContainer">Sample Video (STROW Link: https://ktgeofficial.github.io/STROW/video.html?id=Verifying....):</label><br> <div id="videoContainer" style="width: 100%; max-width: 560px;"> <iframe id="videoPreview" src="" frameborder="0" allowfullscreen="" style="width: 100%; height: 315px;"></iframe> </div><br><br> <label for="aspectRatio">Aspect Ratio:</label><br> <select id="aspectRatio" name="aspectRatio"> <option value="16:9">16:9</option> <option value="9:16">9:16</option> <option value="4:3">4:3</option> <option value="19:10">19:10</option> <option value="phi">φ:1</option> </select><br><br> <label for="videoTitle">Video Title:</label><br> <input type="text" id="videoTitle" name="videoTitle"><br><br> <label for="videoDescription">Video Description:</label><br> <textarea id="videoDescription" name="videoDescription" rows="3"></textarea><br><br> <label for="spreadsheetLink">Link to Spreadsheet:</label><br> <input type="url" id="spreadsheetLink" name="spreadsheetLink"><br><br> <label for="formLink">Form Link / Voter Link:</label><br> <input type="url" id="formLink" name="formLink"><br><br> <label class="custom-checkbox"> Is Private: <input type="checkbox" id="isPrivate" name="isPrivate"> <span class="checkmark"></span></label><br><br> <label class="custom-checkbox"> Is There A Deadline: <input type="checkbox" id="hasDeadline" name="hasDeadline" checked=""> <span class="checkmark"></span></label><br> <br><label for="deadline">Deadline:</label><br> <input type="datetime-local" id="deadline" name="deadline"><br><br> <label for="emails">Emails (comma separated):</label><br> <textarea id="emails" name="emails" rows="2"></textarea><br><br> <label for="emailTitle">Email Title:</label><br> <input type="text" id="emailTitle" name="emailTitle"><br><br> <label for="emailDescription">Email Description:</label><br> <textarea id="emailDescription" name="emailDescription" rows="3"></textarea><br><br> <button type="submit" id="uploadButton">Upload</button> <br><br></form> </div> 
-<script>const videoLinkInput = document.getElementById("videoLink");
+<script>async function getCookie() {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith("verification" + '=')) {
+      return cookie.substring("verification".length + 1);
+    }
+  }
+  return null;
+}const videoLinkInput = document.getElementById("videoLink");
 const videoPreview = document.getElementById("videoPreview");
 const aspectRatioSelect = document.getElementById("aspectRatio");
 const videoContainer = document.getElementById("videoContainer");
@@ -109,12 +118,12 @@ async function getRawFingerprintData() {
 }
 
 async function generateHexFingerprint(rawData) {
-  const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
-  return Array.from(new Uint8Array(buffer))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
+      if (await getCookie() === null) { return Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join(''); } else { return await getCookie(); }
+    }
 
 async function prepareUploadSession() {
   const rawData = await getRawFingerprintData();
@@ -235,6 +244,7 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
 
 
 
