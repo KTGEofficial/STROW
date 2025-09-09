@@ -190,6 +190,33 @@
   }
 
   return scores;
+}function renderSortedResults(scores) {
+  const container = document.getElementById("search-results");
+  container.innerHTML = "";
+  const sortedEntries = Object.entries(scores).sort(([, a], [, b]) => b.finalScore - a.finalScore);
+  sortedEntries.forEach(([videoID, entry]) => {
+    const anchor = document.createElement("a");
+    anchor.href = `https://ktgeofficial.github.io/STROW/video.html?id=${videoID}`;
+    anchor.style.textDecoration = "none";
+    anchor.style.color = "inherit";
+    const card = document.createElement("div");
+    card.className = "result-card";
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "result-title";
+    titleDiv.textContent = entry.title;
+    titleDiv.style = "font-weight:bold;";
+    const uploaderDiv = document.createElement("div");
+    uploaderDiv.className = "result-meta";
+    uploaderDiv.textContent = `Uploaded by ${entry.uploader}`;
+    const idDiv = document.createElement("div");
+    idDiv.className = "result-meta";
+    idDiv.textContent = videoID;
+    card.appendChild(titleDiv);
+    card.appendChild(uploaderDiv);
+    card.appendChild(idDiv);
+    anchor.appendChild(card);
+    container.appendChild(anchor);
+  });
 }
     async function getRawFingerprintData() {
       const traits = [
@@ -267,4 +294,5 @@ renderSortedResults(scores);
   })();
   </script>
 </body></html>
+
 
