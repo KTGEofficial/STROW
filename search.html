@@ -321,7 +321,7 @@ else {
     try {
 const rawData = await getRawFingerprintData();
       const hexFingerprint = await generateHexFingerprint(rawData);
-      const nowUTC = new Date().getTime()
+      const nowUTC = new Date()
       const query = new URLSearchParams({
         mode: "search",
         fingerprint: hexFingerprint,
