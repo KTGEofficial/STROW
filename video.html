@@ -286,7 +286,7 @@ async function loadVideoData() {
   }).toString();
 
   try {
-    const response = await fetch(`https://script.google.com/macros/s/AKfycbzmQWZ9x-nq1oTXel_DHgb9drTUx9uudAhKqonBOj58rHpUrsElRiRDPNN4ZIhGynOF/exec?${query}`);
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbxtI0fzk-wnS-xjS8OD9Pvg1wI2EvqeHLUnvUmVbMAaDPBSITcIOMq1fvAmlqQ1wuuW/exec?${query}`);
     const result = await response.json();
 
     if (!result.success) {
@@ -343,8 +343,34 @@ async function loadVideoData() {
       `Deadline: ${formatDeadline(result.deadlineRaw, true, result.timezoneAbbreviation) || result.deadlineRaw}`;
     document.getElementById("spreadsheetLink").href = result.spreadsheetHref || "#";
     document.getElementById("externalLink").href = result.externalHref || "#";
-if (result.commentcount === 1) { document.getElementById("commentCount").textContent = "1 Comment"; } else {
-    document.getElementById("commentCount").textContent = `${result.commentcount || 0} Comments`; }
+if (result.commentCount === 1) { document.getElementById("commentCount").textContent = "1 Comment"; } else {
+    document.getElementById("commentCount").textContent = `${result.commentCount || 0} Comments`; }
+  const container = document.getElementById("comment-section");
+  container.innerHTML = ""; // Clear previous comments
+
+  const commentIDs = Object.keys(result);
+
+  for (let i = commentIDs.length - 1; i >= 0; i--) {
+    const id = commentIDs[i];
+    const commentData = result[id];
+
+    if (!commentData || typeof commentData !== "object") continue;
+
+    const commentDiv = document.createElement("div");
+    commentDiv.className = "comment";
+
+    const authorP = document.createElement("p");
+    const boldAuthor = document.createElement("b");
+    boldAuthor.textContent = commentData.username;
+    authorP.appendChild(boldAuthor);
+
+    const textP = document.createElement("p");
+    textP.textContent = commentData.comment || "";
+
+    commentDiv.appendChild(authorP);
+    commentDiv.appendChild(textP);
+    container.appendChild(commentDiv);
+  }
 
     // PATCHED DYNAMIC COUNTDOWN LOGIC
     updateCountdown(deadlineTimestamp, !!deadlineTimestamp);
@@ -373,7 +399,7 @@ if (result.commentcount === 1) { document.getElementById("commentCount").textCon
     colorscheme: findColorScheme()
   }).toString();
 
-  const response = await fetch(`https://script.google.com/macros/s/AKfycbzmQWZ9x-nq1oTXel_DHgb9drTUx9uudAhKqonBOj58rHpUrsElRiRDPNN4ZIhGynOF/exec?${query}`);
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbxtI0fzk-wnS-xjS8OD9Pvg1wI2EvqeHLUnvUmVbMAaDPBSITcIOMq1fvAmlqQ1wuuW/exec?${query}`);
   const result = await response.json();
   console.log("CSSC result:", result);
 })();
@@ -409,7 +435,7 @@ const mode = "commenting";
 mode: mode
     }).toString();
 
-    const response = await fetch("https://script.google.com/macros/s/AKfycbzmQWZ9x-nq1oTXel_DHgb9drTUx9uudAhKqonBOj58rHpUrsElRiRDPNN4ZIhGynOF/exec?" + query);
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxtI0fzk-wnS-xjS8OD9Pvg1wI2EvqeHLUnvUmVbMAaDPBSITcIOMq1fvAmlqQ1wuuW/exec?" + query);
     const result = await response.json();
 
     alert("Your comment has been submitted.");
@@ -428,4 +454,5 @@ loadVideoData();
 
 </body>
 </html>
+
 
