@@ -395,7 +395,7 @@ async function submitComment() {
     const timestamp = new Date().toISOString();
     const urlParams = new URLSearchParams(window.location.search);
     const videoID = urlParams.get("id") || "";
-    const colorscheme = getColorScheme();
+    const colorscheme = findColorScheme();
     const replyof = "";
 const mode = "commenting";
 
@@ -428,3 +428,4 @@ loadVideoData();
 
 </body>
 </html>
+
