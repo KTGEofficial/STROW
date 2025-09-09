@@ -352,7 +352,7 @@ if (result.commentCount === 1) { document.getElementById("commentCount").textCon
 
   for (let i = commentIDs.length - 1; i >= 0; i--) {
     const id = commentIDs[i];
-    const commentData = result[id];
+    const commentData = result.comments[id];
 
     if (!commentData || typeof commentData !== "object") continue;
 
@@ -454,6 +454,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
