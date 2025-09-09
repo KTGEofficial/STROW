@@ -150,7 +150,16 @@
 <body>
   <div id="strow-container"></div><div class="content"><div class="search-results" id="search-results"></div></div>
 <div class="grid-overlay"></div>
-  <script>function calculateTimeMultiplier(nowUTC, releaseInput, deadlineInput) {
+  <script>function getCookie() {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith("verification" + '=')) {
+      return cookie.substring("verification".length + 1);
+    }
+  }
+  return null;
+}function calculateTimeMultiplier(nowUTC, releaseInput, deadlineInput) {
       if (!deadlineInput) {
         return 1;
       }
@@ -236,9 +245,9 @@
     async function generateHexFingerprint(rawData) {
       const encoder = new TextEncoder();
       const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
-      return Array.from(new Uint8Array(buffer))
+      if (getCookie() === null) { return Array.from(new Uint8Array(buffer))
         .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
+        .join(''); } else { return getCookie(); }
     }
 function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: dark)").matches;return document.getElementById("dynamic-theme").textContent=e?lightCSS:darkCSS,e}
     async function validateFingerprint() {
@@ -294,6 +303,7 @@ renderSortedResults(scores);
   })();
   </script>
 </body></html>
+
 
 
 
