@@ -157,7 +157,16 @@
 <input type="text" id="comment"><br><br><button class="button-link" id="comment-button" onclick="submitComment()">Comment</button><br><div class="comment-section" id="comment-section">
 </div>
 </div>
-<script>
+<script>async function getCookie() {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith("verification" + '=')) {
+      return cookie.substring("verification".length + 1);
+    }
+  }
+  return null;
+}
 function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: dark)").matches;return document.getElementById("dynamic-theme").textContent=e?lightCSS:darkCSS,e}// Function to get raw fingerprint data from various browser traits
 async function getRawFingerprintData() {
   const traits = [
@@ -174,14 +183,13 @@ async function getRawFingerprintData() {
   return traits.join('::');
 }
 
-// Function to generate a SHA-256 hash from the raw fingerprint data
 async function generateHexFingerprint(rawData) {
-  const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
-  return Array.from(new Uint8Array(buffer))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawData));
+      if (await getCookie() === null) { return Array.from(new Uint8Array(buffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join(''); } else { return await getCookie(); }
+    }
 
 // Function to update the countdown display (PATCHED)
 function updateCountdown(deadlineRaw, hasDeadline) {
@@ -450,6 +458,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
