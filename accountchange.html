@@ -201,7 +201,7 @@ button:active {
 const expirationDate = new Date(cookieCreationDate.getTime() + (90 * 24 * 60 * 60 * 1000));
 document.cookie = `verification=${result.cookie}; expires=${expirationDate.toUTCString()}; path=/; secure; samesite=strict`;
 const response = await fetch(`https://script.google.com/macros/s/AKfycbx6otPaqJDcyHzo4z9jHtO91Dh3YIZOV6y1mB-b1iXuqdMAuQd2jkFuhLJqE1c1YIgp/exec?${new URLSearchParams({ mode: "cookie", creationTimestamp: cookieCreationDate.toISOString(), expirationTimestamp: expirationDate.toISOString(), colorscheme: findColorScheme(), cookie: result.cookie }).toString()}`); }
-            window.location.href = "https://ktgeofficial.github.io/STROW/";
+            // window.location.href = "https://ktgeofficial.github.io/STROW/";
           } else {
             document.getElementById('status').textContent = "Recovery email sent if matched.";
           }
@@ -323,6 +323,7 @@ const response = await fetch(`https://script.google.com/macros/s/AKfycbx6otPaqJD
 
 
 </body></html>
+
 
 
 
