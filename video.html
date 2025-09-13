@@ -40,90 +40,47 @@
 <input type="text" id="comment"><br><br><button class="button-link" id="comment-button" onclick="submitComment()">Comment</button><br><div class="comment-section content" id="comment-section">
 </div>
 </div>
-<script>function renderComment(e, t, n, c = !1) {
-  let o = [];
+<script>
+function renderComment(e,t,n,c=!1){let o=[];try{o="string"==typeof t.tags?JSON.parse(t.tags):Array.isArray(t.tags)?t.tags:[]}catch(e){o=[]}const s=document.createElement("div");s.className=c?"comment reply":"comment",s.id=e;const m=document.createElement("div");m.className="comment-header";const a=document.createElement("strong");a.className="username",a.textContent=t.username,m.appendChild(a),o.forEach((e=>{const t=document.createElement("span");t.className=e,t.textContent=e.toUpperCase(),m.appendChild(t)})),s.appendChild(m);const l=document.createElement("div");l.className="comment-body",l.textContent=t.comment,s.appendChild(l);const i=document.createElement("div");i.className="comment-actions";const d=document.createElement("button");d.className="like",d.textContent=("liked"===t.userOpinion?"Liked ":"Like ")+(t.likes||0),d.onclick=()=>likeComment(e),i.appendChild(d);const r=document.createElement("button");r.className="dislike",r.textContent=("disliked"===t.userOpinion?"Disliked ":"Dislike ")+(t.dislikes||0),r.onclick=()=>dislikeComment(e),i.appendChild(r);const p=document.createElement("button");p.className="reply",p.textContent="Reply",p.onclick=()=>replyCall(e),i.appendChild(p),s.appendChild(i),n.appendChild(s),t.replies&&"object"==typeof t.replies&&Object.keys(t.replies).forEach((e=>{renderComment(e,t.replies[e],s,!0)}))}function drawComments(e){const t=document.getElementById("comment-section");t.innerHTML="";const n=Object.keys(e.comments);for(let c=n.length-1;c>=0;c--){const o=n[c],s=e.comments[o];s&&"object"==typeof s&&renderComment(o,s,t,!1)}}
+async function likeComment(requestID) {
+  const query = new URLSearchParams({
+    mode: "reaction",
+    videoID: new URLSearchParams(window.location.search).get("id"),
+    fingerprint,
+    requestID,
+    opinionSwitch: "liked",
+    colorscheme: findColorScheme()
+  }).toString();
+
   try {
-    o = typeof t.tags === "string"
-      ? JSON.parse(t.tags)
-      : Array.isArray(t.tags)
-        ? t.tags
-        : [];
-  } catch (err) {
-    o = [];
-  }
-
-  const s = document.createElement("div");
-  s.className = c ? "comment reply" : "comment";
-  s.id = e;
-
-  const m = document.createElement("div");
-  m.className = "comment-header";
-
-  const a = document.createElement("strong");
-  a.className = "username";
-  a.textContent = t.username;
-  m.appendChild(a);
-
-  o.forEach(tag => {
-    const tagSpan = document.createElement("span");
-    tagSpan.className = tag;
-    tagSpan.textContent = tag.toUpperCase();
-    m.appendChild(tagSpan);
-  });
-
-  s.appendChild(m);
-
-  const l = document.createElement("div");
-  l.className = "comment-body";
-  l.textContent = t.comment;
-  s.appendChild(l);
-
-  const i = document.createElement("div");
-  i.className = "comment-actions";
-
-  const d = document.createElement("button");
-  d.className = "like";
-  d.textContent = (t.userOpinion === "liked" ? "Liked " : "Like ") + (t.likes || 0);
-  d.onclick = () => likeComment(e);
-  i.appendChild(d);
-
-  const r = document.createElement("button");
-  r.className = "dislike";
-  r.textContent = (t.userOpinion === "disliked" ? "Disliked " : "Dislike ") + (t.dislikes || 0);
-  r.onclick = () => dislikeComment(e);
-  i.appendChild(r);
-
-  const p = document.createElement("button");
-  p.className = "reply";
-  p.textContent = "Reply";
-  p.onclick = () => replyCall(e);
-  i.appendChild(p);
-
-  s.appendChild(i);
-  n.appendChild(s);
-
-  if (t.replies && typeof t.replies === "object") {
-    Object.keys(t.replies).forEach(replyID => {
-      renderComment(replyID, t.replies[replyID], s, true);
-    });
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbw0OauOsq7LmDTXptSbZxTGUPzw4wqy-YAgZOmBradxydAW3BxL8zkFGlVJvM1DfeoS/exec?${query}`);
+    const result = await response.json();
+    alert("Successfully toggled like!"); // You can customize this message
+  } catch (error) {
+    alert("Failed to like comment: " + error.message);
   }
 }
 
-function drawComments(e) {
-  const t = document.getElementById("comment-section");
-  t.innerHTML = "";
+async function dislikeComment(requestID) {
+  const query = new URLSearchParams({
+    mode: "reaction",
+    videoID: new URLSearchParams(window.location.search).get("id"),
+    fingerprint,
+    requestID,
+    opinionSwitch: "disliked",
+    colorscheme: findColorScheme()
+  }).toString();
 
-  const n = Object.keys(e.comments);
-  for (let c = n.length - 1; c >= 0; c--) {
-    const o = n[c];
-    const s = e.comments[o];
-    if (s && typeof s === "object") {
-      renderComment(o, s, t, false);
-    }
+  try {
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbw0OauOsq7LmDTXptSbZxTGUPzw4wqy-YAgZOmBradxydAW3BxL8zkFGlVJvM1DfeoS/exec?${query}`);
+    const result = await response.json();
+    alert("Successfully toggled dislike!");
+  } catch (error) {
+    alert("Failed to dislike comment: " + error.message);
   }
 }
 
-let activeReplyTarget = null;
+    let activeReplyTarget = null;
 
 function replyCall(id) {
   const targetComment = document.getElementById(id);
@@ -296,7 +253,7 @@ async function loadVideoData() {
   }).toString();
 
   try {
-    const response = await fetch(`https://script.google.com/macros/s/AKfycbxggNxOAGRjcmuXNwZTVRYYqYWT_lPYASAmcM3MXbU9E0uPkTJryiz9a_V6jYuGLrg5/exec?${query}`);
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbw0OauOsq7LmDTXptSbZxTGUPzw4wqy-YAgZOmBradxydAW3BxL8zkFGlVJvM1DfeoS/exec?${query}`);
     const result = await response.json();
 console.log(result);
     if (!result.success) {
@@ -384,7 +341,7 @@ drawComments(result);
     colorscheme: findColorScheme()
   }).toString();
 
-  const response = await fetch(`https://script.google.com/macros/s/AKfycbxggNxOAGRjcmuXNwZTVRYYqYWT_lPYASAmcM3MXbU9E0uPkTJryiz9a_V6jYuGLrg5/exec?${query}`);
+  const response = await fetch(`https://script.google.com/macros/s/AKfycbw0OauOsq7LmDTXptSbZxTGUPzw4wqy-YAgZOmBradxydAW3BxL8zkFGlVJvM1DfeoS/exec?${query}`);
   const result = await response.json();
   console.log("CSSC result:", result);
 })();
@@ -420,7 +377,7 @@ const mode = "commenting";
 mode: mode
     }).toString();
 
-    const response = await fetch("https://script.google.com/macros/s/AKfycbxggNxOAGRjcmuXNwZTVRYYqYWT_lPYASAmcM3MXbU9E0uPkTJryiz9a_V6jYuGLrg5/exec?" + query);
+    const response = await fetch("https://script.google.com/macros/s/AKfycbw0OauOsq7LmDTXptSbZxTGUPzw4wqy-YAgZOmBradxydAW3BxL8zkFGlVJvM1DfeoS/exec?" + query);
     const result = await response.json();
 if (replyID !== undefined && replyID !== null && replyID !== "") { cancelReply(); }
     alert("Your comment has been submitted.");
@@ -439,3 +396,4 @@ loadVideoData();
 
 </body>
 </html>
+
