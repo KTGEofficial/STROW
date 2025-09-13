@@ -46,7 +46,7 @@ async function likeComment(requestID) {
   const query = new URLSearchParams({
     mode: "reaction",
     videoID: new URLSearchParams(window.location.search).get("id"),
-    fingerprint,
+    fingerprint: await generateHexFingerprint(await getRawFingerprintData()),
     requestID,
     opinionSwitch: "liked",
     colorscheme: findColorScheme()
@@ -65,7 +65,7 @@ async function dislikeComment(requestID) {
   const query = new URLSearchParams({
     mode: "reaction",
     videoID: new URLSearchParams(window.location.search).get("id"),
-    fingerprint,
+    fingerprint: await generateHexFingerprint(await getRawFingerprintData()),
     requestID,
     opinionSwitch: "disliked",
     colorscheme: findColorScheme()
@@ -396,4 +396,5 @@ loadVideoData();
 
 </body>
 </html>
+
 
