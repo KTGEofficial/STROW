@@ -40,8 +40,48 @@
 <input type="text" id="comment"><br><br><button class="button-link" id="comment-button" onclick="submitComment()">Comment</button><br><div class="comment-section content" id="comment-section">
 </div>
 </div>
-<script>function renderComment(e,t,n,c=!1){let o=[];try{o="string"==typeof t.tags?JSON.parse(t.tags):Array.isArray(t.tags)?t.tags:[]}catch(e){o=[]}const s=document.createElement("div");s.className=c?"comment reply":"comment",s.id=e;const m=document.createElement("div");m.className="comment-header";const a=document.createElement("strong");a.className="username",a.textContent=t.username,m.appendChild(a),o.forEach((e=>{const t=document.createElement("span");t.className=e,t.textContent=e.toUpperCase(),m.appendChild(t)})),s.appendChild(m);const l=document.createElement("div");l.className="comment-body",l.textContent=t.comment,s.appendChild(l);const i=document.createElement("div");i.className="comment-actions";const d=document.createElement("button");d.className="like",d.textContent=("liked"===t.userOpinion?"Liked ":"Like ")+(t.likes||0),d.onclick=()=>likeComment(e),i.appendChild(d);const r=document.createElement("button");r.className="dislike",r.textContent=("disliked"===t.userOpinion?"Disliked ":"Dislike ")+(t.dislikes||0),r.onclick=()=>dislikeComment(e),i.appendChild(r);const p=document.createElement("button");p.className="reply",p.textContent="Reply",p.onclick=()=>replyCall(e),i.appendChild(p),s.appendChild(i),n.appendChild(s),t.replies&&"object"==typeof t.replies&&Object.keys(t.replies).forEach((e=>{renderComment(e,t.replies[e],s,!0)}))}function drawComments(e){const t=document.getElementById("comment-section");t.innerHTML="";const n=Object.keys(e.comments);for(let c=n.length-1;c>=0;c--){const o=n[c],s=e.comments[o];s&&"object"==typeof s&&renderComment(o,s,t,!1)}}
-async function getCookie() {
+<script>function renderComment(e,t,n,c=!1){let o=[];try{o="string"==typeof t.tags?JSON.parse(t.tags):Array.isArray(t.tags)?t.tags:[]}catch(e){o=[]}const s=document.createElement("div");s.className=c?"comment reply":"comment",s.id=e;const m=document.createElement("div");m.className="comment-header";const a=document.createElement("strong");a.className="username",a.textContent=t.username,m.appendChild(a),o.forEach((e=>{const t=document.createElement("span");t.className=e,t.textContent=e.toUpperCase(),m.appendChild(t)})),s.appendChild(m);const l=document.createElement("div");l.className="comment-body",l.textContent=t.comment,s.appendChild(l);const i=document.createElement("div");i.className="comment-actions";const d=document.createElement("button");d.className="like",d.textContent=("liked"===t.userOpinion?"Liked ":"Like ")+(t.likes||0),d.onclick=`likeComment(${e})`,i.appendChild(d);const r=document.createElement("button");r.className="dislike",r.textContent=("disliked"===t.userOpinion?"Disliked ":"Dislike ")+(t.dislikes||0),r.onclick=`dislikeComment(${e})`,i.appendChild(r);const p=document.createElement("button");p.className="reply",p.textContent="Reply",p.onclick=`replyCall(${e})`,i.appendChild(p),s.appendChild(i),n.appendChild(s),t.replies&&"object"==typeof t.replies&&Object.keys(t.replies).forEach((e=>{renderComment(e,t.replies[e],s,!0)}))}function drawComments(e){const t=document.getElementById("comment-section");t.innerHTML="";const n=Object.keys(e.comments);for(let c=n.length-1;c>=0;c--){const o=n[c],s=e.comments[o];s&&"object"==typeof s&&renderComment(o,s,t,!1)}}
+let activeReplyTarget = null;
+
+function replyCall(id) {
+  const targetComment = document.getElementById(id);
+  if (!targetComment) return;
+
+  // If the same comment is clicked again, cancel
+  if (activeReplyTarget === id) {
+    cancelReply();
+    activeReplyTarget = null;
+    return;
+  }
+
+  // If a different comment is clicked, cancel previous and proceed
+  cancelReply();
+
+  // Create reply hotbar
+  const replyHotbar = document.createElement("div");
+  replyHotbar.className = "comment-body";
+  replyHotbar.id = "reply-hotbar";
+
+  replyHotbar.innerHTML = `
+    <br>
+    <input type="text" id="reply-box">
+    <br><br>
+    <button class="button-link" id="reply-submission-button" onclick="submitComment('${id}')">Reply</button>
+    <button class="button-link" id="reply-cancel" onclick="cancelReply()">Cancel</button>
+  `;
+
+  targetComment.appendChild(replyHotbar);
+  activeReplyTarget = id;
+}
+
+function cancelReply() {
+  const existingHotbar = document.getElementById("reply-hotbar");
+  if (existingHotbar && existingHotbar.parentNode) {
+    existingHotbar.parentNode.removeChild(existingHotbar);
+  }
+  activeReplyTarget = null;
+}
+    async function getCookie() {
   const cookies = document.cookie.split(';');
   for (let cookie of cookies) {
     cookie = cookie.trim();
@@ -300,7 +340,7 @@ mode: mode
 
     const response = await fetch("https://script.google.com/macros/s/AKfycbxggNxOAGRjcmuXNwZTVRYYqYWT_lPYASAmcM3MXbU9E0uPkTJryiz9a_V6jYuGLrg5/exec?" + query);
     const result = await response.json();
-
+if (replyID !== undefined && replyID !== null && replyID !== "") { cancelReply(); }
     alert("Your comment has been submitted.");
     // Optionally clear the input or show feedback
     document.getElementById("comment").value = "";
@@ -317,6 +357,7 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
 
