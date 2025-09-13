@@ -45,7 +45,7 @@ function computeCommentScore(comment, videoMeta) {
   const netLikes     = ((comment.likes || 0) - (comment.dislikes || 0) + 1);
   const tagMult      = getTagMultiplier(comment.tags);
   const wordMult     = wordMatchMultiplier(comment.comment, videoMeta);
-  const timeMult     = getTimeMultiplierFromTimestamp(comment.timestamp);
+  const timeMult     = getTimeMultiplier(comment.commentAge);
   
   return netLikes * tagMult * wordMult * timeMult;
 }function renderComment(e,t,n,o=!1,c){let m=[];try{m="string"==typeof t.tags?JSON.parse(t.tags):Array.isArray(t.tags)?t.tags:[]}catch{m=[]}const s=document.createElement("div");s.className=o?"comment reply":"comment",s.id=e;const a=document.createElement("div");a.className="comment-header";const i=document.createElement("strong");i.className="username",i.textContent=t.username,a.appendChild(i),m.forEach((e=>{const t=document.createElement("span");t.className=e,t.textContent=e.toUpperCase(),a.appendChild(t)})),s.appendChild(a);const r=document.createElement("div");r.className="comment-body",r.textContent=t.comment,s.appendChild(r);const d=document.createElement("div");d.className="comment-actions";const l=document.createElement("button");l.className="like",l.textContent=("liked"===t.userOpinion?"Liked ":"Like ")+(t.likes||0),l.onclick=()=>likeComment(e),d.appendChild(l);const p=document.createElement("button");p.className="dislike",p.textContent=("disliked"===t.userOpinion?"Disliked ":"Dislike ")+(t.dislikes||0),p.onclick=()=>dislikeComment(e),d.appendChild(p);const C=document.createElement("button");if(C.className="reply",C.textContent="Reply",C.onclick=()=>replyCall(e),d.appendChild(C),s.appendChild(d),n.appendChild(s),t.replies&&"object"==typeof t.replies){Object.entries(t.replies).map((([e,t])=>({id:e,comment:t,score:computeCommentScore(t,c)}))).sort(((e,t)=>t.score-e.score)).forEach((({id:e,comment:t})=>{renderComment(e,t,s,!0,c)}))}}function drawComments(e,t){const n=document.getElementById("comment-section");n.innerHTML="";Object.entries(e.comments).filter((([e,t])=>"object"==typeof t)).map((([e,n])=>({id:e,comment:n,score:computeCommentScore(n,t)}))).sort(((e,t)=>t.score-e.score)).forEach((({id:e,comment:o})=>{renderComment(e,o,n,!1,t)}))}
@@ -369,5 +369,6 @@ loadVideoData();
 
 </body>
 </html>
+
 
 
