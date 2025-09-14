@@ -219,7 +219,7 @@
     uploaderDiv.textContent = `Uploaded by ${entry.uploader}`;
     const idDiv = document.createElement("div");
     idDiv.className = "result-meta";
-    idDiv.textContent = videoID;
+    if (entry.views !== 1) { idDiv.textContent = `${entry.views} views | ${videoID}`; } else { idDiv.textContent = `1 view | ${videoID}`; }
     card.appendChild(titleDiv);
     card.appendChild(uploaderDiv);
     card.appendChild(idDiv);
@@ -303,6 +303,7 @@ renderSortedResults(scores);
   })();
   </script>
 </body></html>
+
 
 
 
