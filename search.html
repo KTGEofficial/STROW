@@ -266,7 +266,8 @@ function calculateFinalScores(nowUTC, jsonData, searchQuery) {
     scores[id] = {
       title: entry.title.trim(),
       uploader: entry.uploader,
-      finalScore: parseFloat(finalScore)
+      finalScore: parseFloat(finalScore),
+      views: entry.views
     };
   }
 
@@ -292,7 +293,7 @@ function renderSortedResults(scores) {
     uploaderDiv.textContent = `Uploaded by ${entry.uploader}`;
     const idDiv = document.createElement("div");
     idDiv.className = "result-meta";
-    if (entry.views !== 1) { idDiv.textContent = `${entry.views.toString()} views | ${videoID}`; } else { idDiv.textContent = `1 view | ${videoID}`; }
+    if (entry.views !== 1) { idDiv.textContent = `${entry.views} views | ${videoID}`; } else { idDiv.textContent = `1 view | ${videoID}`; }
     card.appendChild(titleDiv);
     card.appendChild(uploaderDiv);
     card.appendChild(idDiv);
