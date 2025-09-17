@@ -173,7 +173,7 @@
       const date = new Date(dateString);
     
       if (isNaN(date.getTime())) {
-        return "Invalid Date";
+        return "No deadline";
       }
     
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -376,6 +376,7 @@ renderComment(commentID, newComment, container, !!replyID, "");
 
 </body>
 </html>
+
 
 
 
