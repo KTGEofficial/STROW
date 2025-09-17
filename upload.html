@@ -173,12 +173,12 @@ function updateVideoPreview() {
   const url = videoLinkInput.value.trim();
   let embedUrl = "";
 
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|watch\/\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) {
     embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
   }
 
-  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const driveMatch = url.match(/(?:drive\.google\.com\/file\/d\/|drive\.google\.com\/open\?id=)([a-zA-Z0-9_-]{10,})/);
   if (driveMatch) {
     embedUrl = `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
   }
@@ -218,7 +218,7 @@ function updateAspectRatio() {
     break;
   }
 
-  videoPreview.style.height = `${height}px`;
+  videoPreview.style.height = `${height}px`;videoPreview.style.width = `${width}px`;
 }
 
 async function handleSubmit(event) {
@@ -257,6 +257,3 @@ if (result.redirect) {
 </script>
 
  </body></html>
-
-
-
