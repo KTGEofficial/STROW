@@ -199,18 +199,18 @@ function updateAspectRatio() {
   height = 315;
   switch (ratio) {
     case "16:9":  height = width * 9 / 16; break;
-    case "9:16":  width = height * 16 / 9; break;
+    case "9:16":  width = height * 9 / 16; break;
     case "4:3":   height = width * 3 / 4; break;
     case "19:10": height = width * 10 / 19; break;
     case "phi":   height = width / 1.618; break;
-    case "21:9":  height = width * 21 / 9; break;
+    case "21:9":  height = width * 9 / 21; break;
     default:
     if (/^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio)) {
       const [left, right] = aspectRatio.split(":").map(Number);
       if (left > right) {
-        width = height * left / right;
+        width = height * right / left;
       } else if (right > left) {
-        height = width * left / right;
+        height = width * right / left;
       } else {
         width = height;
       }
@@ -257,3 +257,4 @@ if (result.redirect) {
 </script>
 
  </body></html>
+
