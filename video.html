@@ -305,14 +305,30 @@
         descriptionContainer.innerHTML = "";
     
         const descriptionLines = (result?.description || "").split("\n");
-        descriptionLines.forEach(line => {
-          const trimmedLine = line.trim();
-          if (trimmedLine) {
-            const p = document.createElement("p");
-            p.textContent = trimmedLine;
-            descriptionContainer.appendChild(p);
-          }
-        });
+descriptionLines.forEach(line => {
+  const trimmedLine = line.trim();
+  if (trimmedLine) {
+    const p = document.createElement("p");
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = trimmedLine.split(urlRegex);
+
+    parts.forEach(part => {
+      if (urlRegex.test(part)) {
+        // Create clickable link
+        const a = document.createElement("a");
+        a.href = part;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = part;
+        p.appendChild(a);
+      } else {
+        p.appendChild(document.createTextNode(part));
+      }
+    });
+
+    descriptionContainer.appendChild(p);
+  }
+});
     
         document.getElementById("videoAuthor").textContent = `From ${result.author} at ${formatDeadline(result.uploadDate, false, result.timezoneAbbreviation) || result.uploadDate}`;
         document.getElementById("videoDeadline").textContent = `Deadline: ${formatDeadline(result.deadlineRaw, true, result.timezoneAbbreviation) || "No deadline"}`; const viewCount = result.viewCount || 0; const uniqueViewCount = result.uniqueViewCount || 0; const pluralViews = viewCount !== 1 ? "views" : "view"; const pluralUnique = uniqueViewCount !== 1 ? "unique views" : "unique view"; document.getElementById("viewCount").textContent = `${viewCount} ${pluralViews} (${uniqueViewCount} ${pluralUnique})`;
