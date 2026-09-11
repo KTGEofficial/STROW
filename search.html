@@ -4,7 +4,7 @@
   <script>
     const lightCSS = `
       html, body {
-        margin: 0; // New server update
+        margin: 0;
         padding: 0;
         height: 100%;
         overflow-x: hidden;
@@ -216,7 +216,7 @@ function findColorScheme(){const e=!window.matchMedia("(prefers-color-scheme: da
       const hexFingerprint = await generateHexFingerprint(rawData);
 
       const macroURL = "https://script.google.com/macros/s/AKfycbzt8rTZGVPRA4yLsMN8RgGGotQ8rxcrtADoO2gsBa2KMQEW9uqRPVuYeI1MaQlS2hzA/exec";
-      const query = new URLSearchParams({ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
+      const query = new URLSearchParams(/* REMINDERTOREPLACE: cssc */{ mode: "cssc", fingerprint: hexFingerprint, colorscheme: findColorScheme() }).toString();
       const response = await fetch(`${macroURL}?${query}`);
       const result = await response.json();
 
@@ -308,7 +308,7 @@ if (!urlParams.has("id")) {
 const rawData = await getRawFingerprintData();
       const hexFingerprint = await generateHexFingerprint(rawData);
       const query = new URLSearchParams({
-        mode: "search",
+        /* REMINDERTOREPLACE: search */mode: "search",
         fingerprint: hexFingerprint,
         colorscheme: findColorScheme(),
         ishomepage: false,
@@ -333,7 +333,7 @@ const rawData = await getRawFingerprintData();
       const hexFingerprint = await generateHexFingerprint(rawData);
       const nowUTC = new Date()
       const query = new URLSearchParams({
-        mode: "search",
+        /* REMINDERTOREPLACE: search */mode: "search",
         fingerprint: hexFingerprint,
         colorscheme: findColorScheme(),
         ishomepage: false,
