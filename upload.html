@@ -130,7 +130,7 @@ async function prepareUploadSession() {
   const hexFingerprint = await generateHexFingerprint(rawData);
 console.log(`${rawData} ${hexFingerprint}`);
   const query = new URLSearchParams({
-    mode: "upload",
+    /* REMINDERTOREPLACE: upload */mode: "upload",
     fingerprint: hexFingerprint,
     colorscheme: findColorScheme()
   }).toString();
@@ -158,7 +158,7 @@ prepareUploadSession(); // Run on page load
   const rawData = await getRawFingerprintData();
   const hexFingerprint = await generateHexFingerprint(rawData);
   const query = new URLSearchParams({
-    mode: "cssc",
+    /* REMINDERTOREPLACE: cssc */mode: "cssc",
     fingerprint: hexFingerprint,
     colorscheme: findColorScheme()
   }).toString();
@@ -236,7 +236,7 @@ async function handleSubmit(event) {
   data.videoID = videoID;
   data.username = username;
   data.fingerprint = await getRawFingerprintData();
-  data.mode = "uploading";
+  /* REMINDERTOREPLACE: uploading */data.mode = "uploading";
   data.colorscheme = findColorScheme();
 document.getElementById("uploadButton").disabled = true;
   // ⏰ Convert deadline to UTC ISO string
