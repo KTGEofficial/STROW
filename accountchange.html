@@ -2,7 +2,7 @@
   <script>
     const lightCSS = `
       html, body {
-        margin: 0; // New server update
+        margin: 0;
         padding: 0;
         height: 100%;
         overflow-x: hidden;
@@ -180,7 +180,7 @@ button:active {
 (async () => {
   const { hex, base64 } = await getFingerprints();
   const query = new URLSearchParams({
-    mode: "cssc",
+    /* REMINDERTOREPLACE: cssc */mode: "cssc",
     fingerprint: hex,
     colorscheme: findColorScheme()
   }).toString();
@@ -200,7 +200,7 @@ button:active {
             if (result.cookie !== "") { const cookieCreationDate = new Date(); // actual Date object
 const expirationDate = new Date(cookieCreationDate.getTime() + (90 * 24 * 60 * 60 * 1000));
 document.cookie = `verification=${result.cookie}; expires=${expirationDate.toUTCString()}; path=/; secure; samesite=strict`;
-const response = await fetch(`https://script.google.com/macros/s/AKfycbxrCDZ6utO2emrK95sw9lknNHAAmxgkFznLXp_ioBUuZRHUFdwuFmszsIqZFrZ0FMO-/exec?${new URLSearchParams({ mode: "cookie", creationTimestamp: cookieCreationDate.toISOString(), expirationTimestamp: expirationDate.toISOString(), colorscheme: findColorScheme(), cookie: result.cookie }).toString()}`); }
+const response = await fetch(`https://script.google.com/macros/s/AKfycbxrCDZ6utO2emrK95sw9lknNHAAmxgkFznLXp_ioBUuZRHUFdwuFmszsIqZFrZ0FMO-/exec?${new URLSearchParams({ /* REMINDERTOREPLACE: cookie */mode: "cookie", creationTimestamp: cookieCreationDate.toISOString(), expirationTimestamp: expirationDate.toISOString(), colorscheme: findColorScheme(), cookie: result.cookie }).toString()}`); }
             window.location.href = "https://ktgeofficial.github.io/STROW/"; // Cookies work now
           } else {
             document.getElementById('status').textContent = "Recovery email sent if matched.";
@@ -222,7 +222,7 @@ const response = await fetch(`https://script.google.com/macros/s/AKfycbxrCDZ6utO
       const { hex, base64 } = await getFingerprints();
 
       const payload = {
-        mode: "signup",
+        /* REMINDERTOREPLACE: signup */mode: "signup",
         username,
         password,
         confirm,
@@ -245,7 +245,7 @@ const response = await fetch(`https://script.google.com/macros/s/AKfycbxrCDZ6utO
       const { hex, base64 } = await getFingerprints();
 
       const payload = {
-        mode: "login",
+        /* REMINDERTOREPLACE: login */mode: "login",
         action: "Login",
         username,
         password,
@@ -265,7 +265,7 @@ const response = await fetch(`https://script.google.com/macros/s/AKfycbxrCDZ6utO
       const { hex, base64 } = await getFingerprints();
 
       const payload = {
-        mode: "login",
+        /* REMINDERTOREPLACE: login */mode: "login",
         action: "Reset Password",
         username,
         password: "", // not needed
